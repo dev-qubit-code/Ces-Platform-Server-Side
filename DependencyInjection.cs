@@ -3,19 +3,13 @@ using Asp.Versioning;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using SPMS_PROJECT.Exceptions;
-// using SPMS_PROJECT.Data;
-// using SPMS_PROJECT.BackgroundJobs;
-// using SPMS_PROJECT.Services;
-// using SPMS_PROJECT.Validators;
 using Microsoft.EntityFrameworkCore;
 using SPMS_PROJECT.OpenApi.Transformers;
-// using SPMS_PROJECT.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
-// using SPMS_PROJECT.Enums;
 
 namespace SPMS_PROJECT;
 
@@ -25,7 +19,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         services
-                // .AddCustomProblemDetails()
+                .AddCustomProblemDetails()
                 .AddCustomApiVersioning()
                 .AddApiDocumentation()
                 .AddExceptionHandling()
@@ -40,19 +34,19 @@ public static class DependencyInjection
         return services;
     }
 
-    // public static IServiceCollection AddCustomProblemDetails(this IServiceCollection services)
-    // {
-    //     services.AddProblemDetails(options =>
-    //     {
-    //         options.CustomizeProblemDetails = (context) =>
-    //         {
-    //             // add key value pair to the problem details
-    //             //context.ProblemDetails.Extensions  
-    //         };
-    //     });
+    public static IServiceCollection AddCustomProblemDetails(this IServiceCollection services)
+    {
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = (context) =>
+            {
+                // add key value pair to the problem details
+                //context.ProblemDetails.Extensions  
+            };
+        });
 
-    //     return services;
-    // }
+        return services;
+    }
 
 
     public static IServiceCollection AddCustomApiVersioning(this IServiceCollection services)
@@ -159,7 +153,6 @@ public static class DependencyInjection
     // }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {        
-        
 
         // services.AddScoped<IdentityService>();
         return services;
