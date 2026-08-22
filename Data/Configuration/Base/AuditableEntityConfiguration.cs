@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using StudentsAssociation.Models;
+using Ces_Platform_Server_Side.Models;
 
 namespace Ces_Platform_Server_Side.Data.Configuration;
 public class AuditableEntityConfiguration : IEntityTypeConfiguration<AuditableEntity>

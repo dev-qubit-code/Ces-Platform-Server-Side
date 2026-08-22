@@ -1,4 +1,4 @@
-namespace StudentsAssociation.Enums;
+namespace Ces_Platform_Server_Side.Enums;
 
 public enum TestKind
 {

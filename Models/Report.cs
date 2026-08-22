@@ -1,4 +1,4 @@
-namespace StudentsAssociation.Models;
+namespace Ces_Platform_Server_Side.Models;
 
 public class Report:AuditableEntity
 {

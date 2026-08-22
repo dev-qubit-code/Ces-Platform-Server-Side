@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using StudentsAssociation.Models;
+using Ces_Platform_Server_Side.Models;
 
 public class EntityConfiguration : IEntityTypeConfiguration<Entity>
 {

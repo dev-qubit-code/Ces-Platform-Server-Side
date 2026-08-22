@@ -1,6 +1,6 @@
 using Ces_Platform_Server_Side.Data.Configuration;
 using Microsoft.EntityFrameworkCore;
-using StudentsAssociation.Models;
+using Ces_Platform_Server_Side.Models;
 
 public class AppDbContext : DbContext
 {

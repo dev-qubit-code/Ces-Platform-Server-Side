@@ -1,6 +1,6 @@
-using StudentsAssociation.Enums;
+using Ces_Platform_Server_Side.Enums;
 
-namespace StudentsAssociation.Models;
+namespace Ces_Platform_Server_Side.Models;
 
 public class Test:AuditableEntity
 {
