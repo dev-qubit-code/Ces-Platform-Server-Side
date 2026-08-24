@@ -109,7 +109,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(op => 
         {
-            op.UseSqlServer("YourConnection");
+            op.UseSqlServer(configuration.GetConnectionString("Default"));
         }); 
         return services;
     }
@@ -153,6 +153,9 @@ public static class DependencyInjection
     // }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {        
+        
+        services.AddScoped<IUserRepository,UserRepository>();
+        services.AddScoped<IUserService,UserService>();
 
         // services.AddScoped<IdentityService>();
         return services;
