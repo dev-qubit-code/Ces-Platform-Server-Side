@@ -2,7 +2,7 @@ using SPMS_PROJECT;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("secrets.json");
+builder.Configuration.AddJsonFile("secrets.json",true);
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
