@@ -31,7 +31,7 @@ app.UseStatusCodePages();
 
 app.UseRouting();
 
-// app.UseCors();
+app.UseCors();
 
 // app.UseAuthentication();
 

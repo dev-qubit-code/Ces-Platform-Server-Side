@@ -26,7 +26,7 @@ public static class DependencyInjection
                 .AddController()
                 .AddValidation()
                 .AddDatabase(configuration)
-                // .AddCorsFunc()
+                .AddCorsFunc()
                 // .AddJwtAuthentication(configuration)
                 // .AddAuthorizationPolicies()
                 .AddBusinessServices();
@@ -114,12 +114,12 @@ public static class DependencyInjection
         return services;
     }
 
-    // public static IServiceCollection AddCorsFunc(this IServiceCollection services)
-    // {
-    //     services.AddCors(op => op.AddDefaultPolicy(bu => bu.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+    public static IServiceCollection AddCorsFunc(this IServiceCollection services)
+    {
+        services.AddCors(op => op.AddDefaultPolicy(bu => bu.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
-    //     return services;
-    // }
+        return services;
+    }
 
     // public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     // {
