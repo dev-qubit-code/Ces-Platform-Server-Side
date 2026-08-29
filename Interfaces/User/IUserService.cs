@@ -1,3 +1,4 @@
+using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 
 public interface IUserService
@@ -7,4 +8,5 @@ public interface IUserService
     public Task<PagedResult<UserPageResponse>> GetPagedUsers(UserFilter? filter, CancellationToken ct = default);
     public Task<UserResponse> GetUserById(Guid userId,CancellationToken ct);
     public Task DeleteUser(Guid userId, CancellationToken ct = default);
+    public Task UpdateUserActivation(Guid userId, UpdateUserActivationRequest request, CancellationToken ct = default);
 }

@@ -2,6 +2,7 @@ using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Responses;
 using SPMS_PROJECT.Exceptions;
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Requests;
 
 public class UserService(IUserRepository repository) : IUserService 
 {
@@ -68,6 +69,18 @@ public class UserService(IUserRepository repository) : IUserService
 
         if(!success) 
             throw new InvalidOperationException("Error occurd while deleting the user");
-    } 
-    
+    }
+
+    public async Task UpdateUserActivation(Guid userId, UpdateUserActivationRequest request, CancellationToken ct = default)
+    {
+        var user = await repository.GetUserByIdAsync(userId,ct) ?? throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
+
+        if(user.IsActive == request.IsActive)
+            throw new BusinessRuleException($"The user is already {(user.IsActive?"Activated":"Deactivated")}",StatusCodes.Status409Conflict);
+
+        user.IsActive = request.IsActive;
+        
+        if(!await repository.UpdateUserAsync(ct))
+            throw new InvalidOperationException("Error occured while updating the user activation");
+    }
 }

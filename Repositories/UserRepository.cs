@@ -19,6 +19,9 @@ public class UserRepository(AppDbContext context) : IUserRepository
             return (totalCount,page);
         }
 
+        filter.PageSize = Math.Max(1, filter.PageSize);
+        filter.Page = Math.Clamp(filter.Page, 1, 100);
+
         if(!string.IsNullOrWhiteSpace(filter.Search))
             users = users.Where(u =>
                      u.Name.Contains(filter.Search) || 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.Requests;
 
 namespace Ces_Platform_Server_Side.Models;
 public class User:AuditableEntity

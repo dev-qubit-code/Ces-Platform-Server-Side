@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -81,6 +82,22 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<ActionResult> Delete(Guid userId, CancellationToken ct = default) 
     {
         await userService.DeleteUser(userId, ct);
+
+        return NoContent();
+    }
+
+    [HttpPut("{userId:guid}/activation")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+    [EndpointName("UpdateUserActivation")]
+    [EndpointSummary("User Activation")]
+    [EndpointDescription("User Activation.")]
+    public async Task<ActionResult> UpdateUserActivation(Guid userId,UpdateUserActivationRequest request, CancellationToken ct = default) 
+    {
+        await userService.UpdateUserActivation(userId,request, ct);
 
         return NoContent();
     }
