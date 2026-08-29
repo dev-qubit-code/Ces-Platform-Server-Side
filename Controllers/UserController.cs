@@ -85,4 +85,20 @@ public class UserController(IUserService userService) : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{userId:guid}/activation")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+    [EndpointName("UpdateUserActivation")]
+    [EndpointSummary("User Activation")]
+    [EndpointDescription("User Activation.")]
+    public async Task<ActionResult> UpdateUserActivation(Guid userId,UpdateUserActivationRequest request, CancellationToken ct = default) 
+    {
+        await userService.UpdateUserActivation(userId,request, ct);
+
+        return NoContent();
+    }
 }
