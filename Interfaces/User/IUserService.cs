@@ -1,3 +1,4 @@
+using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 
 public interface IUserService

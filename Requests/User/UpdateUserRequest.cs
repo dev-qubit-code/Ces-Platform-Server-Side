@@ -1,5 +1,6 @@
 using Ces_Platform_Server_Side.Enums;
 
+namespace Ces_Platform_Server_Side.Requests;
 public class UpdateUserRequest
 {
     public string Name { get; set; } = string.Empty;
