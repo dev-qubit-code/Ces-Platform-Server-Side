@@ -4,13 +4,18 @@ public class StudentInfo:AuditableEntity
 {
     public string Name { get; set; } = string.Empty;
     public string About { get; set; } = string.Empty;
-    public List<string> Skills { get; set; } = [];
-    public Dictionary<string,string> Sources { get; set; } = [];
-    public StudentInfo(string name, string about, List<string> skills, Dictionary<string,string> sources)
+    public string Major { get; set; } = string.Empty;
+
+    // Navigation Properties
+    
+    // public List<string> Skills { get; set; } = [];
+    // public Dictionary<string,string> Sources { get; set; } = [];
+    public StudentInfo()
+    {}
+    public StudentInfo(string name, string about, string major)
     {
         Name = name;
         About = about;
-        Skills = skills;
-        Sources = sources;
+        Major = major;
     }
 }
