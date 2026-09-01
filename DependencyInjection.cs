@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
+using Ces_Platform_Server_Side.Services;
 
 namespace SPMS_PROJECT;
 
@@ -156,6 +157,9 @@ public static class DependencyInjection
         
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IUserService,UserService>();
+        
+        services.AddScoped<ITeacherRepository,TeacherRepository>();
+        services.AddScoped<ITeacherService,TeacherService>();
 
         // services.AddScoped<IdentityService>();
         return services;
