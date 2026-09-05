@@ -1,6 +1,5 @@
-﻿using Ces_Platform_Server_Side.Models;
- 
-namespace Ces_Platform_Server_Side.Responses.Course
+﻿
+namespace Ces_Platform_Server_Side.Responses
 {
     public class CourseResponse
     {
@@ -10,7 +9,7 @@ namespace Ces_Platform_Server_Side.Responses.Course
         //public List<TestResponse> Tests { set; get; } = [];
         //public List<NoteResponse> Notes { set; get; } = [];
 
-        public static CourseResponse FromModle (Models.Course course)
+        public static CourseResponse FromModel(Models.Course course)
         {
             return new CourseResponse
             {
@@ -20,7 +19,7 @@ namespace Ces_Platform_Server_Side.Responses.Course
             };
        
         }
-        public static IEnumerable<CourseResponse> FromModles(IEnumerable<Models.Course> courses) => courses.Select(FromModle); 
+        public static IEnumerable<CourseResponse> FromModels(IEnumerable<Models.Course> courses) => courses.Select(FromModel); 
 
     }
 }

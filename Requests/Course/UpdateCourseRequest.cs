@@ -1,7 +1,7 @@
 
 
 
-namespace Ces_Platform_Server_Side.Requests.Course;
+namespace Ces_Platform_Server_Side.Requests;
 public class UpdateCourseRequest
 {
   

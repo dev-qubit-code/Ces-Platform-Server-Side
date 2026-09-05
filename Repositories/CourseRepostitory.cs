@@ -46,8 +46,7 @@ namespace Ces_Platform_Server_Side.Repositories.Course
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                courses = courses.Where(c => c.Name.Contains(filter.Search) ||
-                c.CreatedAtUtc.ToString().Contains(filter.Search));
+                courses = courses.Where(c => c.Name.Contains(filter.Search) );
 
             }
                 TotalItems = await courses.CountAsync(ct);

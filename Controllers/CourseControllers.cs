@@ -1,9 +1,8 @@
 
 using Asp.Versioning;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
-using Ces_Platform_Server_Side.Requests.Course;
+using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Ces_Platform_Server_Side.Responses.Course;
 using Ces_Platform_Server_Side.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,9 +18,9 @@ public class CourseControllers(CourseService service) : ControllerBase
     [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    [EndpointName("Create Course")]
-    [EndpointSummary("Create course")]
-    [EndpointDescription("Create course")]
+    [EndpointName("CreateCourse")]
+    [EndpointSummary("Create a new Course")]
+    [EndpointDescription("Create a new course using Endpoint")]
 
     public async Task<ActionResult<CourseResponse>> Create(CreateCourseRequest request, CancellationToken ct = default)
     {
@@ -35,9 +34,9 @@ public class CourseControllers(CourseService service) : ControllerBase
     [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    [EndpointName("Get Course")]
-    [EndpointSummary("Get course")]
-    [EndpointDescription("Get course")]
+    [EndpointName("GetCourse")]
+    [EndpointSummary("Get course Using Id")]
+    [EndpointDescription("Get course From DataBase using Id")]
 
     public async Task<ActionResult<CourseResponse>> GetById(Guid Id, CancellationToken ct = default)
     {
@@ -50,9 +49,9 @@ public class CourseControllers(CourseService service) : ControllerBase
     [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    [EndpointName("Get Course Page")]
+    [EndpointName("GetCoursePage")]
     [EndpointSummary("Get a page of Course")]
-    [EndpointDescription("Get the page Courses")]
+    [EndpointDescription("Get a Page From Course By Query String")]
 
     public async Task<ActionResult<PagedResult<CoursePageResponse>>> GetPage([FromQuery] CourseFilter? filter, CancellationToken ct = default)
     {
@@ -66,9 +65,9 @@ public class CourseControllers(CourseService service) : ControllerBase
     [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    [EndpointName("DELETE Course")]
-    [EndpointSummary("Delete course")]
-    [EndpointDescription("Delete course")]
+    [EndpointName("DELETECourse")]
+    [EndpointSummary("Delete a course Using Id")]
+    [EndpointDescription("Delete a course By Id From Database")]
 
     public async Task<ActionResult> DeleteById(Guid Id,CancellationToken ct = default)
     {
@@ -81,9 +80,9 @@ public class CourseControllers(CourseService service) : ControllerBase
     [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-    [EndpointName("Update Course")]
-    [EndpointSummary("Update course")]
-    [EndpointDescription("Update course")]
+    [EndpointName("UpdateCourse")]
+    [EndpointSummary("Update course Using Id")]
+    [EndpointDescription("Update course Fields Using Id")]
 
     public async Task<ActionResult> Update(Guid Id,UpdateCourseRequest request,CancellationToken ct = default)
     {

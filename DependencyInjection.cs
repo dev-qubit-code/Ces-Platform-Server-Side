@@ -11,6 +11,8 @@ using System.Text;
 using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Services;
+using Ces_Platform_Server_Side.Repositories.Course;
+using Ces_Platform_Server_Side.Interfaces.Course;
 
 namespace SPMS_PROJECT;
 
@@ -153,13 +155,18 @@ public static class DependencyInjection
     //     return services;
     // }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
-    {        
-        
+    {
+        services.AddScoped<CourseRepository>();
+
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IUserService,UserService>();
         
         services.AddScoped<ITeacherRepository,TeacherRepository>();
         services.AddScoped<ITeacherService,TeacherService>();
+
+        services.AddScoped<ICourseRepository, CourseRepository>();
+        services.AddScoped<ICourseService, CourseService>();
+
 
         // services.AddScoped<IdentityService>();
         return services;

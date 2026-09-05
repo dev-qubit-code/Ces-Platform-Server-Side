@@ -1,7 +1,7 @@
-﻿using Ces_Platform_Server_Side.Requests.Course;
+﻿using Ces_Platform_Server_Side.Requests;
 using FluentValidation;
 
-namespace Ces_Platform_Server_Side.Validators.Course
+namespace Ces_Platform_Server_Side.Validators
 {
     public class UpdateCourseValidator:AbstractValidator<UpdateCourseRequest>
     {

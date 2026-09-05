@@ -1,10 +1,10 @@
 ﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
-using Ces_Platform_Server_Side.Interfaces.Course;
+using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Repositories.Course;
-using Ces_Platform_Server_Side.Requests.Course;
+using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Ces_Platform_Server_Side.Responses.Course;
+using Ces_Platform_Server_Side.Responses;
 using SPMS_PROJECT.Exceptions;
 
 namespace Ces_Platform_Server_Side.Services

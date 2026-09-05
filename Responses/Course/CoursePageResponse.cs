@@ -9,7 +9,7 @@ namespace Ces_Platform_Server_Side.Responses.Course
         public int CountOfTests { get; set; } = 0;
         public int CountOfNotes { get; set; } = 0;
 
-        public static CoursePageResponse FromModle(Models.Course course)
+        public static CoursePageResponse FromModel(Models.Course course)
         {
             return new CoursePageResponse
             {
