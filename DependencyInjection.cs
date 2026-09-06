@@ -11,8 +11,7 @@ using System.Text;
 using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Services;
-using Ces_Platform_Server_Side.Repositories.Course;
-using Ces_Platform_Server_Side.Interfaces.Course;
+using Ces_Platform_Server_Side.Repositories;
 
 namespace SPMS_PROJECT;
 

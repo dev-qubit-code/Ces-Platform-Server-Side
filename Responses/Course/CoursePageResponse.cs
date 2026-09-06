@@ -1,6 +1,6 @@
 ﻿ 
 
-namespace Ces_Platform_Server_Side.Responses.Course
+namespace Ces_Platform_Server_Side.Responses
 {
     public class CoursePageResponse
     {
@@ -19,6 +19,6 @@ namespace Ces_Platform_Server_Side.Responses.Course
             };
 
         }
-        public static IEnumerable<CoursePageResponse> FromModles(IEnumerable<Models.Course> courses) => courses.Select(FromModle);
+        public static IEnumerable<CoursePageResponse> FromModles(IEnumerable<Models.Course> courses) => courses.Select(FromModel);
     }
 }

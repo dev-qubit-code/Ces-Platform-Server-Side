@@ -1,9 +1,8 @@
-﻿using Ces_Platform_Server_Side.Requests.Course;
+﻿using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Ces_Platform_Server_Side.Responses.Course;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
 
-namespace Ces_Platform_Server_Side.Interfaces.Course
+namespace Ces_Platform_Server_Side.Interfaces
 {
     public interface ICourseService
     {

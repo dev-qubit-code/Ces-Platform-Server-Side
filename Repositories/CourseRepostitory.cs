@@ -4,7 +4,7 @@ using Ces_Platform_Server_Side.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ces_Platform_Server_Side.Repositories.Course
+namespace Ces_Platform_Server_Side.Repositories
 {
     public class CourseRepository(AppDbContext context) : ICourseRepository
     {

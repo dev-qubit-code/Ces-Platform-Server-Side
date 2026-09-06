@@ -1,8 +1,8 @@
-﻿using Ces_Platform_Server_Side.Requests.Course;
+﻿using Ces_Platform_Server_Side.Requests;
 using FluentValidation;
 using Microsoft.Identity.Client.Extensibility;
 
-namespace Ces_Platform_Server_Side.Validators.Course
+namespace Ces_Platform_Server_Side.Validators
 {
     public class CreateCourseValidator :AbstractValidator<CreateCourseRequest>
     {
