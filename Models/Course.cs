@@ -1,5 +1,4 @@
-using Ces_Platform_Server_Side.Requests.Course;
-using Microsoft.EntityFrameworkCore;
+using Ces_Platform_Server_Side.Requests;
 
 namespace Ces_Platform_Server_Side.Models;
 

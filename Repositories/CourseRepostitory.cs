@@ -32,17 +32,19 @@ namespace Ces_Platform_Server_Side.Repositories
 
         public async Task<(int, List<Models.Course>)> GetCoursePageAsync(CourseFilter? filter, CancellationToken ct = default)
         {
-            IQueryable<Models.Course> courses = context.Courses;
-            List<Models.Course> Page;
+            IQueryable<Course> courses = context.Courses;
+            List<Course> Page;
             int TotalItems;
             
             if(filter is null)
             {
                Page = await context.Courses.Take(10).ToListAsync(ct); //we should to make this var is dynamic and get value from json
                 TotalItems = await courses.CountAsync(ct);
-
                 return (TotalItems, Page);
             }
+
+            filter.PageSize = Math.Max(1, filter.PageSize);
+            filter.Page = Math.Clamp(filter.Page, 1, 100);
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {

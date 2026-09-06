@@ -16,7 +16,7 @@ namespace Ces_Platform_Server_Side.Services
             if (!await repo.AddCourseAsync(course, ct))
                 throw new InvalidOperationException("Error occured while adding the course");
 
-            return CourseResponse.FromModle(course);
+            return CourseResponse.FromModel(course);
             
         }
 
@@ -34,7 +34,7 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("Id is null", StatusCodes.Status404NotFound);
             Course course = await repo.GetCourseByIdAsync(CourseId, ct);
 
-            return course is null ? throw new BusinessRuleException("Course Not found",StatusCodes.Status404NotFound) : CourseResponse.FromModle(course);
+            return course is null ? throw new BusinessRuleException("Course Not found",StatusCodes.Status404NotFound) : CourseResponse.FromModel(course);
         }
 
         public async Task<PagedResult<CoursePageResponse>> GetPagedCourses(CourseFilter? filter, CancellationToken ct = default)

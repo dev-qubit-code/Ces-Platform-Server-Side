@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/course")]
+[Route("api/v{version:apiVersion}/courses")]
 [ApiVersion("1.0")]
 [Tags("course")]
 public class CourseControllers(CourseService service) : ControllerBase

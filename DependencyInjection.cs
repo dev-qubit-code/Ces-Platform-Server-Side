@@ -156,6 +156,8 @@ public static class DependencyInjection
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
         services.AddScoped<CourseRepository>();
+        services.AddScoped<CourseService>();
+        
 
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IUserService,UserService>();
