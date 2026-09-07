@@ -6,6 +6,7 @@ public class AppDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<Course> Courses{ get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions):base(dbContextOptions){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
