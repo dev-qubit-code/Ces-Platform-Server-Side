@@ -32,7 +32,8 @@ namespace Ces_Platform_Server_Side.Services
         {
             if (CourseId == default(Guid))
                 throw new BusinessRuleException("Id is null", StatusCodes.Status404NotFound);
-            Course course = await repo.GetCourseByIdAsync(CourseId, ct);
+          
+            Course? course = await repo.GetCourseByIdAsync(CourseId, ct);
 
             return course is null ? throw new BusinessRuleException("Course Not found",StatusCodes.Status404NotFound) : CourseResponse.FromModel(course);
         }
@@ -45,7 +46,7 @@ namespace Ces_Platform_Server_Side.Services
            
 
             if (courses is null || !courses.Any())
-               PagedResult<CoursePageResponse>.Create([], totalCount,filter.Page,filter.PageSize);
+             return  PagedResult<CoursePageResponse>.Create([], totalCount,filter.Page,filter.PageSize);
 
             var pagedResult = PagedResult<CoursePageResponse>.Create(
                 CoursePageResponse.FromModles(courses),
@@ -58,7 +59,7 @@ namespace Ces_Platform_Server_Side.Services
 
         public async Task UpdateCourse(Guid CourseId, UpdateCourseRequest request, CancellationToken ct = default)
         {
-            Course course = await repo.GetCourseByIdAsync(CourseId);
+            Course? course = await repo.GetCourseByIdAsync(CourseId);
 
             if (course is null)
                 throw new BusinessRuleException("course not found", StatusCodes.Status404NotFound);

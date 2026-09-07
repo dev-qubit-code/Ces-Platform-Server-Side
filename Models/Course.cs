@@ -35,6 +35,8 @@ public class Course : AuditableEntity
 
     public bool IsEqual(UpdateCourseRequest? obj)
     {
+        if (obj is null)
+            return false;
         return Name == obj.Name; 
     }
 
