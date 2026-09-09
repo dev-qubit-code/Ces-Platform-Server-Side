@@ -1,12 +1,9 @@
 ﻿using Asp.Versioning;
-using Azure;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
-using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Ces_Platform_Server_Side.Controllers
 {
@@ -63,15 +60,12 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("DeleteNote")]
         [EndpointSummary("Delete a Note Using Id")]
-        public async Task<ActionResult> DeleteNote(Guid Id,CancellationToken ct = default)
+        public async Task<ActionResult> DeleteNote(Guid Id, CancellationToken ct = default)
         {
             await service.DeleteNote(Id, ct);
             return NoContent();
         }
-    
 
-    
-    
         [HttpGet]
         [Consumes("application/json")]
         [ProducesResponseType<TeacherResponse>(StatusCodes.Status201Created)]
@@ -80,18 +74,13 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("GetNotesPage")]
         [EndpointSummary("Get Page Of Notes Using Filter")]
-        public async Task<ActionResult> GetNotesPage([FromQuery]NoteFilter? filter,CancellationToken ct = default)
+        public async Task<ActionResult> GetNotesPage([FromQuery] NoteFilter? filter, CancellationToken ct = default)
         {
             PagedResult<NotePageResponse> Result = await service.GetPagedNotes(filter, ct);
             return Ok(Result);
         }
-    
 
-    
-    
-    
-    
-    
+
     }
 
 }

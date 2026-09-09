@@ -17,7 +17,7 @@ namespace Ces_Platform_Server_Side.Responses
             {
                 Id = note.Id,
                 NoteName = note.Name,
-                TeacherName  = note.Teacher is null ? "Non":note.Teacher.Name ,
+                TeacherName  = note.Teacher.Name ,
                 CourseName = note.Course.Name,
                 //NoteFile = note.File
             };

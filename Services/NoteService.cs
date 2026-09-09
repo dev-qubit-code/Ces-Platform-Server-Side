@@ -15,7 +15,7 @@ namespace Ces_Platform_Server_Side.Services
             Note CreatedNote = Note.Create(request, "Test");
             if (await repository.AddNoteAsync(CreatedNote, ct))
             {
-                NoteResponse AddedNote = await GetNoteById(CreatedNote.Id,ct);
+                NoteResponse AddedNote = await GetNoteById(CreatedNote.Id, ct);
                 return AddedNote;
             }
             throw new InvalidOperationException("Error occured while adding the note");
@@ -23,14 +23,14 @@ namespace Ces_Platform_Server_Side.Services
         public async Task DeleteNote(Guid NoteId, CancellationToken ct = default)
         {
             var sucsses = await repository.DeleteNoteAsync(NoteId, ct);
-            if(!sucsses)
+            if (!sucsses)
                 throw new InvalidOperationException("Error occured while Delete the note");
         }
         public async Task<NoteResponse> GetNoteById(Guid NoteId, CancellationToken ct)
         {
-            Note? FoundNote = await repository.GetNoteByIdAsync(NoteId,ct);
+            Note? FoundNote = await repository.GetNoteByIdAsync(NoteId, ct);
 
-            return FoundNote is not null? NoteResponse.FromModel(FoundNote) : throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound); 
+            return FoundNote is not null ? NoteResponse.FromModel(FoundNote) : throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
         }
         public async Task<PagedResult<NotePageResponse>> GetPagedNotes(NoteFilter? filter, CancellationToken ct = default)
         {
@@ -59,9 +59,9 @@ namespace Ces_Platform_Server_Side.Services
             if (note is null)
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             if (note.IsEqual(request))
-                throw new BusinessRuleException("this note is all ready Updated",StatusCodes.Status409Conflict);
+                throw new BusinessRuleException("this note is all ready Updated", StatusCodes.Status409Conflict);
             note.Assign(request, "tester");
-            if(!await repository.UpdateNoteAsync(ct))
+            if (!await repository.UpdateNoteAsync(ct))
                 throw new InvalidOperationException("Error occured while updating the note");
 
         }

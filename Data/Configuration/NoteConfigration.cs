@@ -1,6 +1,5 @@
 ﻿using Ces_Platform_Server_Side.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ces_Platform_Server_Side.Data.Configuration
