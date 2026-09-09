@@ -14,7 +14,10 @@ namespace Ces_Platform_Server_Side.Services
         {
             Note CreatedNote = Note.Create(request, "Test");
             if (await repository.AddNoteAsync(CreatedNote, ct))
-                return NoteResponse.FromModel(CreatedNote);
+            {
+                NoteResponse AddedNote = await GetNoteById(CreatedNote.Id,ct);
+                return AddedNote;
+            }
             throw new InvalidOperationException("Error occured while adding the note");
         }
         public async Task DeleteNote(Guid NoteId, CancellationToken ct = default)
@@ -39,15 +42,15 @@ namespace Ces_Platform_Server_Side.Services
                 return PagedResult<NotePageResponse>.Create(
                     [],
                     CountOfItems,
-                    filter.page,
-                    filter.pagesize
+                    filter.Page,
+                    filter.PageSize
                 );
 
             return PagedResult<NotePageResponse>.Create(
                 NotePageResponse.FromModels(notes),
                 CountOfItems,
-                filter.page,
-                filter.pagesize
+                filter.Page,
+                filter.PageSize
                 );
         }
         public async Task UpdateNote(Guid NoteId, UpdateNoteRequest request, CancellationToken ct = default)
@@ -57,6 +60,7 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             if (note.IsEqual(request))
                 throw new BusinessRuleException("this note is all ready Updated",StatusCodes.Status409Conflict);
+            note.Assign(request, "tester");
             if(!await repository.UpdateNoteAsync(ct))
                 throw new InvalidOperationException("Error occured while updating the note");
 

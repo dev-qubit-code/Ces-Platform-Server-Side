@@ -157,7 +157,9 @@ public static class DependencyInjection
     {
         services.AddScoped<CourseRepository>();
         services.AddScoped<CourseService>();
-        
+
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<INoteService, NoteService>();
 
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IUserService,UserService>();
