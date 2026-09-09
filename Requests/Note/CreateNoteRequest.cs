@@ -3,9 +3,10 @@
     public class CreateNoteRequest
     {
         public string NoteName { set; get; } = string.Empty;
-        public string CourseName { set; get; } = string.Empty;
-        public string TeacherName { set; get; } = string.Empty;
-        public IFormFile NoteFile{ set; get; }
+        public Guid CourseId { set; get; }  
+        public Guid TeacherId { set; get; }  
+        
+        //public IFormFile NoteFile{ set; get; }
 
 
     }

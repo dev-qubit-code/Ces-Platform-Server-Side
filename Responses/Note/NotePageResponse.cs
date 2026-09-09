@@ -18,7 +18,7 @@ namespace Ces_Platform_Server_Side.Responses
                 NoteName = note.Name,
                 TeacherName = note.Teacher.Name,
                 CourseName = note.Course.Name,
-                NoteFile = note.File
+                //NoteFile = note.File
             };
 
         }
