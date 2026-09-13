@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ces_Platform_Server_Side.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260907065338__Add_StudentInfo_Skills_Sources_Tables_And_Their_Configuration_And_Relation")]
+    partial class _Add_StudentInfo_Skills_Sources_Tables_And_Their_Configuration_And_Relation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,27 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                     b.ToTable((string)null);
 
                     b.UseTpcMappingStrategy();
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfoSkill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SkillId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudentInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("StudentInfoId");
+
+                    b.ToTable("StudentInfoSkill");
                 });
 
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.AuditableEntity", b =>
@@ -59,87 +83,7 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                     b.ToTable((string)null);
                 });
 
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Course", b =>
-                {
-                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
-
-                    b.ToTable("Courses", (string)null);
-                });
-
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Teacher", b =>
-                {
-                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.ToTable("Teachers", (string)null);
-                });
-
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.User", b =>
-                {
-                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("Email");
-
-                    b.ToTable("Users", (string)null);
-                });
-                
-                modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfoSkill", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("StudentInfoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SkillId");
-
-                    b.HasIndex("StudentInfoId");
-
-                    b.ToTable("StudentInfoSkill");
-                });
-                
-                       modelBuilder.Entity("Ces_Platform_Server_Side.Models.Skill", b =>
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Skill", b =>
                 {
                     b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
 
@@ -193,6 +137,37 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.ToTable("StudentsInfos", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.User", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("Email");
+
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfoSkill", b =>
