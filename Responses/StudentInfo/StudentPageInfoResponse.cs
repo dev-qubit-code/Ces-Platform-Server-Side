@@ -8,6 +8,7 @@ public class StudentInfoPageResponse
     public string Name { get; set; } = string.Empty;
     public string About { get; set; } = string.Empty;
     public string Major { get; set; } = string.Empty;
+    public DateTimeOffset CreatedAtUtc { get; set; }
     public List<SkillResponse> Skills { get; set; } = [];
     public List<SourceResponse> Sources { get; set; } = [];
 
@@ -17,6 +18,7 @@ public class StudentInfoPageResponse
         Name = studentInfo.Name,
         About = studentInfo.About,
         Major = studentInfo.Major,
+        CreatedAtUtc = studentInfo.CreatedAtUtc,
         Skills = SkillResponse.FromModels(studentInfo.Skills).ToList(),
         Sources = SourceResponse.FromModels(studentInfo.Sources).ToList()
         
