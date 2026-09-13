@@ -1,14 +1,13 @@
 ﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
-using Ces_Platform_Server_Side.Repositories;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 using SPMS_PROJECT.Exceptions;
 
 namespace Ces_Platform_Server_Side.Services
 {
-    public class CourseService(CourseRepository repo) : ICourseService
+    public class CourseService(ICourseRepository repo) : ICourseService
     {
         public async Task<CourseResponse> CreateCourse(CreateCourseRequest request, CancellationToken ct = default)
         {
