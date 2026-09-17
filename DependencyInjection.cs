@@ -168,6 +168,9 @@ public static class DependencyInjection
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<ICourseService, CourseService>();
 
+        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddScoped<IReportService, ReportService>();
+
 
         // services.AddScoped<IdentityService>();
         return services;

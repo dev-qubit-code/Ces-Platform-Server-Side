@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<Source> Sources { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Course> Courses{ get; set; }
+    public DbSet<Report> Reports{ get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions):base(dbContextOptions){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
