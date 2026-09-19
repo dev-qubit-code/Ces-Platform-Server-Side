@@ -2,9 +2,9 @@ using System.Text.Json.Serialization;
 using Asp.Versioning;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using SPMS_PROJECT.Exceptions;
+using Ces_Platform_Server_Side.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using SPMS_PROJECT.OpenApi.Transformers;
+using Ces_Platform_Server_Side.OpenApi.Transformers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -13,7 +13,7 @@ using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Services;
 using Ces_Platform_Server_Side.Repositories;
 
-namespace SPMS_PROJECT;
+namespace Ces_Platform_Server_Side;
 
 
 public static class DependencyInjection

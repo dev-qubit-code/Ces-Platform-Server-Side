@@ -1,4 +1,4 @@
-using SPMS_PROJECT;
+using Ces_Platform_Server_Side;
 
 var builder = WebApplication.CreateBuilder(args);
 
