@@ -62,5 +62,18 @@ public class UserRepository(AppDbContext context) : IUserRepository
         return await context.SaveChangesAsync(ct) > 0;
     }
 
+    
+    public async Task<object?> GetUserByEmailAsync(string userEmail, CancellationToken ct = default)
+    {
+        return await context.Users.Select(u => new 
+        {
+            Id = u.Id,
+            Email = u.Email,
+            Password = u.Password,
+            Name = u.Name,
+            Role = u.Role,
+        }).FirstOrDefaultAsync(u => u.Email == userEmail, ct);
+    }
+
     public async Task<int> GetUsersCountAsync(CancellationToken ct = default) => await context.Users.CountAsync(ct);
 }
