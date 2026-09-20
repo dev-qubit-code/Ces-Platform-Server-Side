@@ -29,8 +29,8 @@ public static class DependencyInjection
                 .AddValidation()
                 .AddDatabase(configuration)
                 .AddCorsFunc()
-                // .AddJwtAuthentication(configuration)
-                // .AddAuthorizationPolicies()
+                .AddJwtAuthentication(configuration)
+                .AddAuthorizationPolicies()
                 .AddBusinessServices();
 
         return services;
@@ -123,36 +123,38 @@ public static class DependencyInjection
         return services;
     }
 
-    // public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
-    // {
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
 
-    //     services.AddAuthentication(options =>
-    //     {
-    //         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //     }).AddJwtBearer(options =>
-    //     {
-    //         options.TokenValidationParameters = new TokenValidationParameters
-    //         {
-    //             ValidateIssuer = true,
-    //             ValidateAudience = true,
-    //             ValidateLifetime = true,
-    //             ClockSkew = TimeSpan.Zero,
-    //             ValidateIssuerSigningKey = true,
-    //             ValidIssuer = "YourIssuer",
-    //             ValidAudience = "YourAudiance",
-    //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourIssuerSigningKey"))
-    //         };
-    //     });
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
 
-    //     return services;
-    // }
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ClockSkew = TimeSpan.Zero,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        jwtSettings["SecretKey"] ?? throw new ArgumentNullException("secret key is null")
+                    ))
+            };
+        });
 
-    // public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
-    // {
-    //     services.AddAuthorization(options => {});
-    //     return services;
-    // }
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
+    {
+        services.AddAuthorization(options => {});
+        return services;
+    }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
         
@@ -172,7 +174,8 @@ public static class DependencyInjection
         services.AddScoped<IReportService, ReportService>();
 
 
-        // services.AddScoped<IdentityService>();
+        services.AddScoped<IdentityService>();
+
         return services;
     }
 }

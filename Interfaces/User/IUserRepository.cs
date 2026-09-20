@@ -10,5 +10,5 @@ public interface IUserRepository
     public Task<bool> UpdateUserAsync(CancellationToken ct = default);
     public Task<bool> DeleteUserAsync(Guid userId, CancellationToken ct = default);
     public Task<int> GetUsersCountAsync(CancellationToken ct = default);
-    public Task<object?> GetUserByEmailAsync(string userEmail, CancellationToken ct = default);
+    public Task<User?> GetUserByEmailAsync(string userEmail, CancellationToken ct = default);
 }
