@@ -1,4 +1,4 @@
-using SPMS_PROJECT;
+using Ces_Platform_Server_Side;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +33,9 @@ app.UseRouting();
 
 app.UseCors();
 
-// app.UseAuthentication();
+app.UseAuthentication();
 
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
