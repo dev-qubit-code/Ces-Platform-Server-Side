@@ -12,6 +12,7 @@ using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Services;
 using Ces_Platform_Server_Side.Repositories;
+using Ces_Platform_Server_Side.Enums;
 
 namespace Ces_Platform_Server_Side;
 
@@ -152,7 +153,15 @@ public static class DependencyInjection
 
     public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
-        services.AddAuthorization(options => {});
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin", p => p.RequireRole(UserRole.Admin.ToString()));
+
+            options.AddPolicy("Manager/Admin", p => p.RequireRole([
+                UserRole.Manager.ToString(),
+                UserRole.Admin.ToString()
+                ]));
+        });
         return services;
     }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
