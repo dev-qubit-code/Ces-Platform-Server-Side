@@ -1,12 +1,14 @@
 using Asp.Versioning;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/users")]
 [ApiVersion("1.0")]
 [Tags("Users")]
+[Authorize("Admin")]
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpPost]
