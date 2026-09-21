@@ -11,6 +11,9 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
         builder.ToTable("Reports");
 
         builder.Property(r => r.TItle).HasMaxLength(50).IsRequired();
+
         builder.Property(r => r.Description).HasMaxLength(255).IsRequired();
+
+        builder.Property(r => r.Priority).HasConversion<string>().IsRequired();
     }
 }
