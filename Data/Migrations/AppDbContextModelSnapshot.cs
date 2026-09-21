@@ -36,6 +36,27 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                     b.UseTpcMappingStrategy();
                 });
 
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfoSkill", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SkillId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudentInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("StudentInfoId");
+
+                    b.ToTable("StudentInfoSkill");
+                });
+
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.AuditableEntity", b =>
                 {
                     b.HasBaseType("Ces_Platform_Server_Side.Models.Entity");
@@ -57,6 +78,111 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.ToTable((string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Course", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Courses", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Report", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TItle")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.ToTable("Reports", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Skill", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.ToTable("Skills", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Source", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("StudentInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasIndex("StudentInfoId");
+
+                    b.ToTable("Sources", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfo", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("About")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Major")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.ToTable("StudentsInfos", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Teacher", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.User", b =>
@@ -90,6 +216,43 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                         .HasFilter("[Email] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfoSkill", b =>
+                {
+                    b.HasOne("Ces_Platform_Server_Side.Models.Skill", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ces_Platform_Server_Side.Models.StudentInfo", "StudentInfo")
+                        .WithMany("StudentInfoSkills")
+                        .HasForeignKey("StudentInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skill");
+
+                    b.Navigation("StudentInfo");
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Source", b =>
+                {
+                    b.HasOne("Ces_Platform_Server_Side.Models.StudentInfo", "StudentInfo")
+                        .WithMany("Sources")
+                        .HasForeignKey("StudentInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudentInfo");
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.StudentInfo", b =>
+                {
+                    b.Navigation("Sources");
+
+                    b.Navigation("StudentInfoSkills");
                 });
 #pragma warning restore 612, 618
         }

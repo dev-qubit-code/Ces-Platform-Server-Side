@@ -1,8 +1,8 @@
-using SPMS_PROJECT;
+using Ces_Platform_Server_Side;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("secrets.json");
+builder.Configuration.AddJsonFile("secrets.json",true);
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -31,11 +31,11 @@ app.UseStatusCodePages();
 
 app.UseRouting();
 
-// app.UseCors();
+app.UseCors();
 
-// app.UseAuthentication();
+app.UseAuthentication();
 
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
