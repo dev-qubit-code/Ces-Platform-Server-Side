@@ -14,5 +14,8 @@ public class CreateReportRequestValidator : AbstractValidator<CreateReportReques
         RuleFor(u => u.Description)
         .NotEmpty().WithMessage("Description is Required")
         .Length(2,255).WithMessage("Description must be between 2 and 255 characters.");
+
+        RuleFor(u => u.Priority)
+        .IsInEnum().WithMessage("invalid priority value");
     }
 }
