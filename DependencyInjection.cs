@@ -1,17 +1,18 @@
-using System.Text.Json.Serialization;
 using Asp.Versioning;
+using Ces_Platform_Server_Side.Interfaces;
+using Ces_Platform_Server_Side.Repositories;
+using Ces_Platform_Server_Side.Services;
+using Ces_Platform_Server_Side.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using SPMS_PROJECT.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using SPMS_PROJECT.OpenApi.Transformers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SPMS_PROJECT.Exceptions;
+using SPMS_PROJECT.OpenApi.Transformers;
 using System.Text;
-using Ces_Platform_Server_Side.Validators;
-using Ces_Platform_Server_Side.Interfaces;
-using Ces_Platform_Server_Side.Services;
-using Ces_Platform_Server_Side.Repositories;
+using System.Text.Json.Serialization;
 
 namespace SPMS_PROJECT;
 
@@ -96,7 +97,11 @@ public static class DependencyInjection
 
     public static IServiceCollection AddController(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
         return services;
     }
 
@@ -169,6 +174,9 @@ public static class DependencyInjection
 
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<ICourseService, CourseService>();
+
+        services.AddScoped<ITestRepository, TestRepository>();
+        services.AddScoped<ITestService, TestService>();
 
 
         // services.AddScoped<IdentityService>();
