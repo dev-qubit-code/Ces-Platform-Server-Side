@@ -15,10 +15,6 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
         .NotEmpty().WithMessage("Email is required.")
         .EmailAddress().WithMessage("Email format is invalid.");
 
-        RuleFor(u => u.Password)
-        .NotEmpty().WithMessage("Password is required.")
-        .Length(8,128).WithMessage("Password must be between 8 and 128 characters.");
-
         RuleFor(u => u.Role)
         .IsInEnum().WithMessage("invalid role value");
     }

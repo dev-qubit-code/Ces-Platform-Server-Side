@@ -31,7 +31,8 @@ public class User:AuditableEntity
     {
         Name = request.Name;
         Email = request.Email;
-        Password = request.Password;
+        if(!string.IsNullOrWhiteSpace(request.Password))
+            Password = request.Password;
         Role = request.Role;
         IsActive = request.IsActive;
         LastModifiedAtUtc = DateTimeOffset.UtcNow;

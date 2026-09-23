@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using SPMS_PROJECT.Exceptions;
+using Ces_Platform_Server_Side.Exceptions;
 
-namespace SPMS_PROJECT.Exceptions;
+namespace Ces_Platform_Server_Side.Exceptions;
 
 public class GlobalExceptionHandler(IProblemDetailsService problemDetailsService)
         : IExceptionHandler
