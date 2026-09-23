@@ -59,6 +59,62 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                     b.ToTable((string)null);
                 });
 
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Course", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("Courses", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Note", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("UNIQUEIDENTIFIER");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("UNIQUEIDENTIFIER");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Notes", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Teacher", b =>
+                {
+                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.ToTable("Teachers", (string)null);
+                });
+
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.User", b =>
                 {
                     b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
@@ -88,6 +144,30 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                     b.HasIndex("Email");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Note", b =>
+                {
+                    b.HasOne("Ces_Platform_Server_Side.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ces_Platform_Server_Side.Models.Teacher", "Teacher")
+                        .WithMany("Notes")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Teacher", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }
