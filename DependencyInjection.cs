@@ -172,7 +172,10 @@ public static class DependencyInjection
         
         services.AddScoped<IStudentInfoRepository,StudentInfoRepository>();
         services.AddScoped<IStudentInfoService,StudentInfoService>();
-      
+
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<INoteService, NoteService>();
+        
         services.AddScoped<ITeacherRepository,TeacherRepository>();
         services.AddScoped<ITeacherService,TeacherService>();
 
@@ -181,7 +184,6 @@ public static class DependencyInjection
 
         services.AddScoped<IReportRepository, ReportRepository>();
         services.AddScoped<IReportService, ReportService>();
-
 
         services.AddScoped<IdentityService>();
 
