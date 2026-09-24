@@ -27,21 +27,23 @@ public class Note : AuditableEntity
 
     public static Note Create(CreateNoteRequest requset, string CreatedBy)
     {
-        return new Note(DateOnly.FromDateTime(DateTime.Now), requset.NoteName, requset.CourseId, requset.TeacherId, CreatedBy);
+        return new Note(requset.Date, requset.Name, requset.CourseId, requset.TeacherId, CreatedBy);
     }
 
     public void Assign(UpdateNoteRequest request, string LastModifyBy)
     {
-        Name = request.NoteName;
+        Name = request.Name;
+        Date = request.Date;
         CourseId = request.CourseId;
         TeacherId = request.TeacherId;
         LastModifiedBy = LastModifyBy;
         LastModifiedAtUtc = DateTimeOffset.UtcNow;
     }
 
-    public bool IsEqual(UpdateNoteRequest request)
-    {
-        return Name == request.NoteName;
-    }
+    public bool IsEqual(UpdateNoteRequest request) => 
+        Name == request.Name &&
+        Date == request.Date &&
+        CourseId == request.CourseId &&
+        TeacherId == request.TeacherId;
 
 }

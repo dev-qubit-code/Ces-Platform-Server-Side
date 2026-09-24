@@ -7,7 +7,7 @@ namespace Ces_Platform_Server_Side.Validators
     {
         public CreateNoteRequestValidatior()
         {
-            RuleFor(u => u.NoteName)
+            RuleFor(u => u.Name)
             .NotEmpty().WithMessage("Name is Required")
             .Length(2, 63).WithMessage("Teacher name must be between 2 and 63 characters.");
 
