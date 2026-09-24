@@ -5,8 +5,12 @@ using Ces_Platform_Server_Side.Models;
 public class AppDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<StudentInfo> StudentInfos { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+    public DbSet<Source> Sources { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Course> Courses{ get; set; }
+    public DbSet<Report> Reports{ get; set; }
     public DbSet<Note> Notes{ get; set; }
     public DbSet<Test> Tests { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions):base(dbContextOptions){}
