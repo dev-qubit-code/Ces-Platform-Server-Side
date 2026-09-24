@@ -6,7 +6,8 @@ namespace Ces_Platform_Server_Side.Responses
     public class NoteResponse
     {
         public Guid Id { set; get; }
-        public string NoteName { set; get; } = string.Empty;
+        public string Name { set; get; } = string.Empty;
+        public DateOnly Date { set; get; }
         public string TeacherName { set; get; } = string.Empty;
         public string CourseName { set; get; } = string.Empty;
        // public IFormFile NoteFile { set; get; }
@@ -16,7 +17,8 @@ namespace Ces_Platform_Server_Side.Responses
             return new NoteResponse
             {
                 Id = note.Id,
-                NoteName = note.Name,
+                Name = note.Name,
+                Date = note.Date,
                 TeacherName  = note.Teacher.Name ,
                 CourseName = note.Course.Name,
                 //NoteFile = note.File
