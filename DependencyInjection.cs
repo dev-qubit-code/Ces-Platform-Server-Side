@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SPMS_PROJECT.Exceptions;
-using SPMS_PROJECT.OpenApi.Transformers;
+using Ces_Platform_Server_Side.Exceptions;
+using Ces_Platform_Server_Side.OpenApi.Transformers;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace SPMS_PROJECT;
+namespace Ces_Platform_Server_Side;
 
 
 public static class DependencyInjection
