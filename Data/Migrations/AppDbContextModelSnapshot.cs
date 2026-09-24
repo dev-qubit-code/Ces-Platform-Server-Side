@@ -336,7 +336,6 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Ces_Platform_Server_Side.Models.Teacher", "Teacher")
-                        .WithMany("Notes")
                         .WithMany("Tests")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
