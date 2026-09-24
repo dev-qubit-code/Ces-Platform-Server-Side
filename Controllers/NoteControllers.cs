@@ -3,6 +3,7 @@ using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ces_Platform_Server_Side.Controllers
@@ -22,6 +23,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("NoteById")]
         [EndpointSummary("Get Note Using Id")]
+        [Authorize(Policy = "Manager/Admin")]
+
         public async Task<ActionResult<NoteResponse>> GetNoteById(Guid Id, CancellationToken ct = default) => Ok(await service.GetNoteById(Id, ct));
 
         [HttpPut("{Id:guid}")]
@@ -32,6 +35,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("UpdateNote")]
         [EndpointSummary("Update Note Using Id")]
+        [Authorize(Policy = "Admin")]
+
         public async Task<ActionResult> UpdateNote(Guid Id, [FromBody] UpdateNoteRequest request, CancellationToken ct = default)
         {
             await service.UpdateNote(Id, request, ct);
@@ -46,6 +51,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("CreateNote")]
         [EndpointSummary("Post a Note")]
+        [Authorize(Policy = "Admin")]
+
         public async Task<ActionResult> CreateNote(CreateNoteRequest request, CancellationToken ct = default)
         {
             NoteResponse response = await service.CreateNote(request, ct);
@@ -60,6 +67,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("DeleteNote")]
         [EndpointSummary("Delete a Note Using Id")]
+        [Authorize(Policy = "Admin")]
+
         public async Task<ActionResult> DeleteNote(Guid Id, CancellationToken ct = default)
         {
             await service.DeleteNote(Id, ct);
@@ -74,6 +83,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("GetNotesPage")]
         [EndpointSummary("Get Page Of Notes Using Filter")]
+        [Authorize(Policy = "Manager/Admin")]
+
         public async Task<ActionResult> GetNotesPage([FromQuery] NoteFilter? filter, CancellationToken ct = default)
         {
             PagedResult<NotePageResponse> Result = await service.GetPagedNotes(filter, ct);
