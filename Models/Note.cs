@@ -30,6 +30,7 @@ public class Note : AuditableEntity
         return new Note(requset.Date, requset.Name, requset.CourseId, requset.TeacherId, CreatedBy);
     }
 
+
     public void Assign(UpdateNoteRequest request, string LastModifyBy)
     {
         Name = request.Name;
