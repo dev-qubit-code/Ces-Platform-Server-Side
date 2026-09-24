@@ -6,6 +6,7 @@ using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 using Ces_Platform_Server_Side.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ces_Platform_Server_Side.Controllers
 {
@@ -24,6 +25,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [EndpointName("CreateTest")]
         [EndpointSummary("Create test")]
         [EndpointDescription("Create test")]
+        [Authorize(Policy = "Manager/Admin")]
+
         public async Task<ActionResult<TestResponse>> Createtest([FromBody] CreateTestRequest request, CancellationToken ct = default)
         {
             var testResponse = await service.CreateTest(request, ct);
@@ -41,6 +44,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [EndpointName("Update Test")]
         [EndpointSummary("Update Test")]
         [EndpointDescription("Update Test")]
+        [Authorize(Policy = "Manager/Admin")]
+
         public async Task<ActionResult> UpdateTest(Guid testId, UpdateTestRequest request, CancellationToken ct = default)
         {
             await service.UpdateTest(testId, request, ct);
@@ -87,6 +92,8 @@ namespace Ces_Platform_Server_Side.Controllers
         [EndpointName("DeleteTest")]
         [EndpointSummary("Delete test")]
         [EndpointDescription("Delete test.")]
+        [Authorize(Policy = "Manager/Admin")]
+
         public async Task<ActionResult> Deletetest(Guid testId, CancellationToken ct = default)
         {
             await service.DeleteTest(testId, ct);
