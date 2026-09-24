@@ -2,9 +2,9 @@ using System.Text.Json.Serialization;
 using Asp.Versioning;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using SPMS_PROJECT.Exceptions;
+using Ces_Platform_Server_Side.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using SPMS_PROJECT.OpenApi.Transformers;
+using Ces_Platform_Server_Side.OpenApi.Transformers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,8 +12,9 @@ using Ces_Platform_Server_Side.Validators;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Services;
 using Ces_Platform_Server_Side.Repositories;
+using Ces_Platform_Server_Side.Enums;
 
-namespace SPMS_PROJECT;
+namespace Ces_Platform_Server_Side;
 
 
 public static class DependencyInjection
@@ -29,8 +30,8 @@ public static class DependencyInjection
                 .AddValidation()
                 .AddDatabase(configuration)
                 .AddCorsFunc()
-                // .AddJwtAuthentication(configuration)
-                // .AddAuthorizationPolicies()
+                .AddJwtAuthentication(configuration)
+                .AddAuthorizationPolicies()
                 .AddBusinessServices();
 
         return services;
@@ -123,44 +124,57 @@ public static class DependencyInjection
         return services;
     }
 
-    // public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
-    // {
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
 
-    //     services.AddAuthentication(options =>
-    //     {
-    //         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //     }).AddJwtBearer(options =>
-    //     {
-    //         options.TokenValidationParameters = new TokenValidationParameters
-    //         {
-    //             ValidateIssuer = true,
-    //             ValidateAudience = true,
-    //             ValidateLifetime = true,
-    //             ClockSkew = TimeSpan.Zero,
-    //             ValidateIssuerSigningKey = true,
-    //             ValidIssuer = "YourIssuer",
-    //             ValidAudience = "YourAudiance",
-    //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourIssuerSigningKey"))
-    //         };
-    //     });
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
 
-    //     return services;
-    // }
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ClockSkew = TimeSpan.Zero,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        jwtSettings["SecretKey"] ?? throw new ArgumentNullException("secret key is null")
+                    ))
+            };
+        });
 
-    // public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
-    // {
-    //     services.AddAuthorization(options => {});
-    //     return services;
-    // }
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin", p => p.RequireRole(UserRole.Admin.ToString()));
+
+            options.AddPolicy("Manager/Admin", p => p.RequireRole([
+                UserRole.Manager.ToString(),
+                UserRole.Admin.ToString()
+                ]));
+        });
+        return services;
+    }
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        services.AddScoped<CourseRepository>();
-        services.AddScoped<CourseService>();
         
-
         services.AddScoped<IUserRepository,UserRepository>();
         services.AddScoped<IUserService,UserService>();
+        
+        services.AddScoped<IStudentInfoRepository,StudentInfoRepository>();
+        services.AddScoped<IStudentInfoService,StudentInfoService>();
+
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<INoteService, NoteService>();
         
         services.AddScoped<ITeacherRepository,TeacherRepository>();
         services.AddScoped<ITeacherService,TeacherService>();
@@ -168,8 +182,11 @@ public static class DependencyInjection
         services.AddScoped<ICourseRepository, CourseRepository>();
         services.AddScoped<ICourseService, CourseService>();
 
+        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddScoped<IReportService, ReportService>();
 
-        // services.AddScoped<IdentityService>();
+        services.AddScoped<IdentityService>();
+
         return services;
     }
 }

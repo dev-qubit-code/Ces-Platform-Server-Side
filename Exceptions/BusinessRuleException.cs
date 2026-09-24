@@ -1,4 +1,4 @@
-namespace SPMS_PROJECT.Exceptions;
+namespace Ces_Platform_Server_Side.Exceptions;
 
 public class BusinessRuleException : Exception
 {
