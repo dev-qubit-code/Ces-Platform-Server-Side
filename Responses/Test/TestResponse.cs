@@ -1,4 +1,5 @@
-﻿using Ces_Platform_Server_Side.Models;
+﻿using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 
 namespace Ces_Platform_Server_Side.Responses
@@ -8,8 +9,8 @@ namespace Ces_Platform_Server_Side.Responses
         public Guid Id { set; get; }
         public string CourseName { set; get; } = string.Empty;
         public string TeacherName { set; get; } = string.Empty;
-        public string TestKind { set; get; } = string.Empty;
-        public string TestDate { set; get; } = string.Empty;
+        public DateOnly Date { get; set; }
+        public TestKind Kind { get; set; }
 
         public static TestResponse FromModel(Test requset)
         {
@@ -18,8 +19,8 @@ namespace Ces_Platform_Server_Side.Responses
                 Id = requset.Id,
                 CourseName = requset.Course.Name,
                 TeacherName = requset.Teacher.Name,
-                TestKind = requset.Kind.ToString(),
-                TestDate = requset.Date.ToString("o")
+                Kind = requset.Kind,
+                Date = requset.Date
             };
         }
 
