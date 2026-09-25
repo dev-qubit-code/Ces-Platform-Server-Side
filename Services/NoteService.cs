@@ -1,4 +1,5 @@
-﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
+﻿using Ces_Platform_Server_Side.Exceptions;
+using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
