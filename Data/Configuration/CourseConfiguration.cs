@@ -13,12 +13,10 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
 
         builder.HasIndex(C => C.Name).IsUnique();
         
-        builder.Property(i => i.Name).HasMaxLength(50).IsRequired();
+        builder.Property(c => c.Name).HasMaxLength(50).IsRequired();
 
+        builder.HasMany(c => c.Notes).WithOne(c => c.Course).HasForeignKey(c => c.CourseId).IsRequired(false);
 
-
-        //  builder.Property(u => u.Tests).IsRequired();
-
-        //  builder.Property(u => u.Notes).IsRequired();
+        builder.HasMany(c => c.Tests).WithOne(c => c.Course).HasForeignKey(c => c.CourseId).IsRequired(false);
     }
 }
