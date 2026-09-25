@@ -9,16 +9,8 @@ using Ces_Platform_Server_Side.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Ces_Platform_Server_Side.OpenApi.Transformers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Ces_Platform_Server_Side.Exceptions;
-using Ces_Platform_Server_Side.OpenApi.Transformers;
 using System.Text;
-using Ces_Platform_Server_Side.Validators;
-using Ces_Platform_Server_Side.Interfaces;
-using Ces_Platform_Server_Side.Services;
-using Ces_Platform_Server_Side.Repositories;
 using Ces_Platform_Server_Side.Enums;
 
 namespace Ces_Platform_Server_Side;
@@ -104,11 +96,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddController(this IServiceCollection services)
     {
-        services.AddControllers()
-            .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });
+        services.AddControllers();
         return services;
     }
 

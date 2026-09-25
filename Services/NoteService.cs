@@ -4,8 +4,6 @@ using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Ces_Platform_Server_Side.Exceptions;
 
 namespace Ces_Platform_Server_Side.Services
 {
