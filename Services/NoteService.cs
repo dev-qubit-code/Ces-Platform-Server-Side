@@ -4,7 +4,6 @@ using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Ces_Platform_Server_Side.Services
 {
@@ -12,6 +11,12 @@ namespace Ces_Platform_Server_Side.Services
     {
         public async Task<NoteResponse> CreateNote(CreateNoteRequest request, CancellationToken ct = default)
         {
+            if (request.CourseId == default(Guid))
+                throw new ArgumentNullException("CourseId Is Required");
+
+               if (request.TeacherId== default(Guid))
+                throw new ArgumentNullException("TeacherId Is Required");
+
             Note CreatedNote = Note.Create(request, "Test");
             if (await repository.AddNoteAsync(CreatedNote, ct))
             {
@@ -55,6 +60,12 @@ namespace Ces_Platform_Server_Side.Services
         }
         public async Task UpdateNote(Guid NoteId, UpdateNoteRequest request, CancellationToken ct = default)
         {
+            if(request.CourseId == default(Guid))
+                throw new ArgumentNullException("CourseId Is Required");
+
+            if(request.TeacherId == default(Guid))
+                throw new ArgumentNullException("TeacherId Is Required");
+            
             var note = await repository.GetNoteByIdAsync(NoteId);
             if (note is null)
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
