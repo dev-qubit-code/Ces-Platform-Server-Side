@@ -11,6 +11,8 @@ public class AppDbContext : DbContext
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Course> Courses{ get; set; }
     public DbSet<Report> Reports{ get; set; }
+    public DbSet<Note> Notes{ get; set; }
+    public DbSet<Test> Tests { get; set; }
     public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions):base(dbContextOptions){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -48,7 +48,8 @@ public class IdentityController(IdentityService identityService) : ControllerBas
           Id = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
           Email = User.FindFirstValue(ClaimTypes.Email)!,
           Name = User.FindFirstValue(ClaimTypes.GivenName)!,
-          Role = Enum.Parse<UserRole>(User.FindFirstValue(ClaimTypes.Role)!)
+          Role = Enum.Parse<UserRole>(User.FindFirstValue(ClaimTypes.Role)!),
+          IsActive = bool.Parse(User.FindFirstValue("Activation")!)
         };
     }
     

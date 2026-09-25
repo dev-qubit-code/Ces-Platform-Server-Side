@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Ces_Platform_Server_Side.Validators;
 
-public class UpdateTeacherRequestValidator : AbstractValidator<UpdateTeacherRequest>
+public class UpdateTestRequestValidator : AbstractValidator<UpdateTeacherRequest>
 {
-    public UpdateTeacherRequestValidator()
+    public UpdateTestRequestValidator()
     {
         RuleFor(u => u.Name)
         .NotEmpty().WithMessage("Name is Required")
