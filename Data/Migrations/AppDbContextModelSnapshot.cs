@@ -307,10 +307,7 @@ namespace Ces_Platform_Server_Side.Data.Migrations
 
                     b.Navigation("StudentInfoSkills");
                 });
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Note", b =>
-                {
-                    b.HasOne("Ces_Platform_Server_Side.Models.Course", "Course")
-                        .WithMany()
+                
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.Note", b =>
                 {
                     b.HasOne("Ces_Platform_Server_Side.Models.Course", "Course")
