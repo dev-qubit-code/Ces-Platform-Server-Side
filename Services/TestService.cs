@@ -66,8 +66,7 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
 
             if (test.IsEqual(request))
-                throw new BusinessRuleException("test is allready updated", StatusCodes.Status409Conflict);
-
+                return;
             test.Assign(request,"tester");
             await repository.UpdateTestAsync(ct);
         }
