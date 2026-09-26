@@ -1,4 +1,5 @@
-﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
+﻿using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,10 @@ namespace Ces_Platform_Server_Side.Repositories
 
                 totalTests = await context.Tests.CountAsync(ct);
             }
+
+            if(filter.Status != TestStatus.None)
+                tests = tests.Where(t => t.Status == filter.Status);
+                
             totalTests = await context.Tests.CountAsync(ct);
 
             PageItem = await tests.Include(t => t.Teacher).Include(c => c.Course).Skip((filter.Page - 1) * filter.PageSize)

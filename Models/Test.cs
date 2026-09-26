@@ -6,7 +6,7 @@ namespace Ces_Platform_Server_Side.Models;
 public class Test:AuditableEntity
 {
 
-    public TestStatus Status { get; set; }
+    public TestStatus Status { get; set; } = TestStatus.Pending;
     //public IFormFile? File { get; set; }
     public DateOnly Date { get; set; }
     public TestKind Kind { get; set; }
