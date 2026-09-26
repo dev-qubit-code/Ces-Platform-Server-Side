@@ -7,20 +7,20 @@ namespace Ces_Platform_Server_Side.Responses
     public class TestResponse
     {
         public Guid Id { set; get; }
-        public string CourseName { set; get; } = string.Empty;
-        public string TeacherName { set; get; } = string.Empty;
         public DateOnly Date { get; set; }
         public TestKind Kind { get; set; }
+        public Guid TeacherId { set; get; }
+        public Guid CourseId { set; get; }
 
-        public static TestResponse FromModel(Test requset)
+        public static TestResponse FromModel(Test test)
         {
             return new TestResponse
             {
-                Id = requset.Id,
-                CourseName = requset.Course.Name,
-                TeacherName = requset.Teacher.Name,
-                Kind = requset.Kind,
-                Date = requset.Date
+                Id = test.Id,
+                Kind = test.Kind,
+                Date = test.Date,
+                TeacherId  = test.TeacherId,
+                CourseId = test.CourseId,
             };
         }
 
