@@ -6,7 +6,9 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
 {
     public async Task<(int,List<Teacher>)> GetTeachersPageAsync(TeacherFilter? filter, CancellationToken ct = default)
     {
-        IQueryable<Teacher> teachers = context.Teachers;
+        IQueryable<Teacher> teachers = context.Teachers
+            .Include(t => t.Notes)
+            .Include(t => t.Tests);
 
         List<Teacher> page;
         int totalCount;
