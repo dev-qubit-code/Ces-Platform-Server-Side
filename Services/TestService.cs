@@ -33,7 +33,7 @@ namespace Ces_Platform_Server_Side.Services
         {
             (int totalTests, List<Test> tests) = await repository.GetTestsPageAsync(filter, ct);
 
-            filter = new();
+            filter ??= new();
 
             if (tests is null || !tests.Any())
             {
