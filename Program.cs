@@ -13,8 +13,8 @@ if(!app.Environment.IsDevelopment())
 
 // app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.MapOpenApi();
 
     app.UseSwaggerUI(options =>
@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
         options.DisplayRequestDuration();
         options.EnableFilter();
     });
-}
+//}
 
 app.UseStatusCodePages();
 
