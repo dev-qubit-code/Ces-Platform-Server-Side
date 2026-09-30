@@ -82,7 +82,9 @@ namespace Ces_Platform_Server_Side.Services
                 return;
 
             test.Assign(request,"tester");
-            await repository.UpdateTestAsync(ct);
+            
+            if(!await repository.UpdateTestAsync(ct))
+                throw new InvalidOperationException("Error occured while updating the test");
         }
 
     public async Task UpdateTestStatus(Guid testId, UpdateTestStatusRequest request, CancellationToken ct = default)
