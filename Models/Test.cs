@@ -39,7 +39,6 @@ public class Test:AuditableEntity
         TeacherId = request.TeacherId == default(Guid) ? TeacherId:request.TeacherId;
         CourseId = request.CourseId == default(Guid) ? CourseId : request.CourseId;
         Date = request.TestDate;
-        Status = request.Status;
         Kind = request.Kind;
     }
 
@@ -48,7 +47,6 @@ public class Test:AuditableEntity
         return TeacherId == request.TeacherId 
             && CourseId == request.CourseId 
             && Date == request.TestDate 
-            && Status == request.Status 
             && Kind == request.Kind;
     }
 
