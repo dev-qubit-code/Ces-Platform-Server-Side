@@ -189,6 +189,9 @@ public static class DependencyInjection
         services.AddScoped<ITestRepository, TestRepository>();
         services.AddScoped<ITestService, TestService>();
 
+        services.AddScoped<IArticleRepository, ArticleRepository>();
+        services.AddScoped<IArticleService, ArticleService>();
+
 
         return services;
     }
