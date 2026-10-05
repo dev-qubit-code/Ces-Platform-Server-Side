@@ -5,8 +5,6 @@ public class TeacherResponse
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public int TestsCount { get; set; }
-    public int NotesCount { get; set; }
 
     public static TeacherResponse FromModel(Teacher teacher) => new()
     {

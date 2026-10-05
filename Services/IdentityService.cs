@@ -40,7 +40,8 @@ public class IdentityService(IConfiguration configuration,IUserRepository UserRe
             new(ClaimTypes.NameIdentifier,user.Id.ToString()),  
             new(JwtRegisteredClaimNames.GivenName,user.Name),  
             new(ClaimTypes.Email,user.Email),  
-            new(ClaimTypes.Role,user.Role.ToString())
+            new(ClaimTypes.Role,user.Role.ToString()),
+            new("Activation",user.IsActive.ToString())
         };
 
         var descriptor = new SecurityTokenDescriptor

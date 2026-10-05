@@ -3,6 +3,7 @@ using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -30,6 +31,7 @@ public class ReportController(IReportService reportService) : ControllerBase
 
 
     [HttpGet("{reportId}")]
+    [Authorize("Manager/Admin")]
     [Consumes("application/json")]
     [ProducesResponseType<ReportResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -46,6 +48,7 @@ public class ReportController(IReportService reportService) : ControllerBase
     }
     
     [HttpGet]
+    [Authorize("Manager/Admin")]
     [Consumes("application/json")]
     [ProducesResponseType<List<ReportResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]

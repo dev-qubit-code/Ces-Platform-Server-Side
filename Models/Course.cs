@@ -7,8 +7,8 @@ public class Course : AuditableEntity
     public string Name { get; set; } = string.Empty;
     // Navigation
 
-    //public List<Test> Tests { set; get; } = [];
-    //public List<Note> Notes { set; get; } = [];
+    public List<Test> Tests { set; get; } = [];
+    public List<Note> Notes { set; get; } = [];
 
     public Course(string name)
     {

@@ -25,8 +25,7 @@ public class UserService(IUserRepository repository) : IUserService
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
 
         if(user.IsEqual(request))
-            throw new BusinessRuleException("user already updated",StatusCodes.Status409Conflict);
-
+            return;
         user.Assign(request,"testName");
  
         if(!await repository.UpdateUserAsync(ct))

@@ -42,8 +42,7 @@ public class StudentInfoService(IStudentInfoRepository repository) : IStudentInf
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
 
         if(studentInfo.IsEqual(request))
-            throw new BusinessRuleException("studentInfo already updated",StatusCodes.Status409Conflict);
-
+            return;
         studentInfo.Assign(request,"testName");
 
         // update the sources list 
