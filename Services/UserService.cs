@@ -24,7 +24,7 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
                 throw new InvalidOperationException("Error occured while adding the new user");
             }        
             
-        logger.LogInformation($"Create new user {newUser.Id} by {newUser.CreatedBy} at {newUser.CreatedAtUtc}",userRole);
+        logger.LogInformation($"Create new user {newUser.Id} by {username} at {newUser.CreatedAtUtc}",userRole);
 
         return UserResponse.FromModel(newUser);
     } 
@@ -56,6 +56,8 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
             throw new InvalidOperationException("Error occured while updating the user");
         }
+        
+        logger.LogInformation($"updated user {user.Id} by {username} at {user.LastModifiedAtUtc}",userRole);
     } 
 
     public async Task<PagedResult<UserPageResponse>> GetPagedUsers(UserFilter? filter, CancellationToken ct = default)
@@ -121,6 +123,8 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
             throw new InvalidOperationException("Error occurd while deleting the user");
         }
+
+        logger.LogInformation($"deleted user {user.Id} by {username} at {user.CreatedAtUtc}",userRole);
     }
 
     public async Task UpdateUserActivation(Guid userId, UpdateUserActivationRequest request, CancellationToken ct = default)
@@ -134,7 +138,7 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
         if(user is null)
         {
-            logger.LogWarning($"User {userId} not found at {DateTime.Now}",userRole);
+            logger.LogWarning($"User {userId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
         }
@@ -152,5 +156,7 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
             
             throw new InvalidOperationException("Error occured while updating the user activation");
         }
+
+        logger.LogInformation($"updated user {user.Id} activation by {username} at {user.LastModifiedAtUtc}",userRole);
     }
 }
