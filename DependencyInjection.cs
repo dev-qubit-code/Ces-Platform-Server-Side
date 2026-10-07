@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.Extensions;
 
 namespace Ces_Platform_Server_Side;
 
@@ -31,6 +32,7 @@ public static class DependencyInjection
                 .AddCorsFunc()
                 .AddJwtAuthentication(configuration)
                 .AddAuthorizationPolicies()
+                .AddHttpContextAccessor()
                 .AddBusinessServices();
 
         return services;
@@ -189,6 +191,12 @@ public static class DependencyInjection
         services.AddScoped<ITestRepository, TestRepository>();
         services.AddScoped<ITestService, TestService>();
 
+        services.AddScoped<IArticleRepository, ArticleRepository>();
+        services.AddScoped<IArticleService, ArticleService>();
+
+        services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<ILogService, LogService>();
+        services.AddScoped(typeof(ILoggerWrapper<>), typeof(LoggerWrapper<>));
 
         return services;
     }

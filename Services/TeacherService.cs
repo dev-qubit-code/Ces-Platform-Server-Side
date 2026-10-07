@@ -26,8 +26,7 @@ public class TeacherService(ITeacherRepository repository) : ITeacherService
             throw new BusinessRuleException("Teacher not found",StatusCodes.Status404NotFound);
 
         if(teacher.IsEqual(request))
-            throw new BusinessRuleException("teacher already updated",StatusCodes.Status409Conflict);
-
+            return;
         teacher.Assign(request,"testName");
  
         if(!await repository.UpdateTeacherAsync(ct))

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ces_Platform_Server_Side.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260925231805__Adding_Course_Relations_of_Tests_and_Notes")]
+    partial class _Adding_Course_Relations_of_Tests_and_Notes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,45 +81,6 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.ToTable((string)null);
-                });
-
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Log", b =>
-                {
-                    b.HasBaseType("Ces_Platform_Server_Side.Models.Entity");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Logs", (string)null);
-                });
-
-            modelBuilder.Entity("Ces_Platform_Server_Side.Models.Article", b =>
-                {
-                    b.HasBaseType("Ces_Platform_Server_Side.Models.AuditableEntity");
-
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(15000)
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("Ces_Platform_Server_Side.Models.Course", b =>

@@ -70,7 +70,7 @@ namespace Ces_Platform_Server_Side.Services
             if (note is null)
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             if (note.IsEqual(request))
-                throw new BusinessRuleException("this note is all ready Updated", StatusCodes.Status409Conflict);
+                return;
             note.Assign(request, "tester");
             if (!await repository.UpdateNoteAsync(ct))
                 throw new InvalidOperationException("Error occured while updating the note");

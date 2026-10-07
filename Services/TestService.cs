@@ -3,15 +3,28 @@ using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Identity.Client;
 using Ces_Platform_Server_Side.Exceptions;
+using Ces_Platform_Server_Side.Enums;
 
 namespace Ces_Platform_Server_Side.Services
 {
     public class TestService(ITestRepository repository) : ITestService
     {
-        public async Task<TestResponse> CreateTest(CreateTestRequest request, CancellationToken ct = default)
+        public async Task<TestResponse> CreateApprovedTest(CreateTestRequest request, CancellationToken ct = default)
+        {
+            Test test = Test.Create(request, "test");
+
+            test.Status = TestStatus.Approved;
+
+            if (await repository.AddTestAsync(test, ct))
+            {
+                Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
+                    return TestResponse.FromModel(Fulltest!);
+            }
+            throw new InvalidOperationException("Error occured while adding the test");
+        }
+
+        public async Task<TestResponse> CreatePendingTest(CreateTestRequest request, CancellationToken ct = default)
         {
             Test test = Test.Create(request, "test");
 
@@ -33,7 +46,7 @@ namespace Ces_Platform_Server_Side.Services
         {
             (int totalTests, List<Test> tests) = await repository.GetTestsPageAsync(filter, ct);
 
-            filter = new();
+            filter ??= new();
 
             if (tests is null || !tests.Any())
             {
@@ -66,10 +79,25 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
 
             if (test.IsEqual(request))
-                throw new BusinessRuleException("test is allready updated", StatusCodes.Status409Conflict);
+                return;
 
             test.Assign(request,"tester");
-            await repository.UpdateTestAsync(ct);
+            
+            if(!await repository.UpdateTestAsync(ct))
+                throw new InvalidOperationException("Error occured while updating the test");
         }
+
+    public async Task UpdateTestStatus(Guid testId, UpdateTestStatusRequest request, CancellationToken ct = default)
+    {
+        var test = await repository.GetTestByIdAsync(testId,ct) ?? throw new BusinessRuleException("Test not found",StatusCodes.Status404NotFound);
+
+        if(test.Status == request.Status)
+            return;
+
+        test.Status = request.Status;
+        
+        if(!await repository.UpdateTestAsync(ct))
+            throw new InvalidOperationException("Error occured while updating the test activation");
+    }
     }
 }
