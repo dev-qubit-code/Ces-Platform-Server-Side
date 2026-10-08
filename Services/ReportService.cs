@@ -4,17 +4,28 @@ using Ces_Platform_Server_Side.Exceptions;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
+using System.Security.Claims;
+using Ces_Platform_Server_Side.Enums;
 
-public class ReportService(IReportRepository repository) : IReportService 
+public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> logger,IHttpContextAccessor accessor) : IReportService 
 {
     public async Task<ReportResponse> CreateReport(CreateReportRequest request, CancellationToken ct = default)
     {
-        
-        var report =  Report.Create(request,"testName");
+
+        // logging userRole is manager and userName is Anonymous as default if there is no authorization 
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
+
+        var report =  Report.Create(request,userName);
 
         if(!await repository.AddReportAsync(report,ct))
-            throw new InvalidOperationException("Error occured while adding the report");
+        {
+            logger.LogError($"Error occured while adding a new report {report.Id} by {userName} at {DateTime.Now}", userRole);
 
+            throw new InvalidOperationException("Error occured while adding the report");
+        }
+
+        logger.LogInformation($"Create new report {report.Id} by {userName} at {report.CreatedAtUtc}",userRole);
         return ReportResponse.FromModel(report);
     } 
     
@@ -43,7 +54,19 @@ public class ReportService(IReportRepository repository) : IReportService
     }
     public async Task<ReportResponse> GetReportById(Guid reportId,CancellationToken ct)
     {
-        var report = await repository.GetReportByIdAsync(reportId,ct) ?? throw new BusinessRuleException("Report not found",StatusCodes.Status404NotFound); 
+        // logging userRole is manager and userName is Anonymous as default if there is no authorization 
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
+
+        var report = await repository.GetReportByIdAsync(reportId,ct);
+        
+        if(report is null)
+        {
+            logger.LogWarning($"Report {reportId} not found at {DateTime.Now} requested by {userName}",userRole);
+
+            throw new BusinessRuleException("Report not found",StatusCodes.Status404NotFound); 
+        }
+        
 
         return ReportResponse.FromModel(report);
     } 
