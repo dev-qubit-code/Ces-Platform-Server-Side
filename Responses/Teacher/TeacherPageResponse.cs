@@ -13,6 +13,8 @@ public class TeacherPageResponse
     {
         Id = teacher.Id,
         Name = teacher.Name,
+        TestsCount = teacher.Tests.Count,
+        NotesCount = teacher.Notes.Count
         // the rest added later with relations
     };
 

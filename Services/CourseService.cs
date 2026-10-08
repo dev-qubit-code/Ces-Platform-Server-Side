@@ -64,7 +64,7 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("course not found", StatusCodes.Status404NotFound);
 
             if (course.IsEqual(request))
-                throw new BusinessRuleException("course already updated", StatusCodes.Status409Conflict);
+                return;
 
             course.Assign(request, "testName");
 
