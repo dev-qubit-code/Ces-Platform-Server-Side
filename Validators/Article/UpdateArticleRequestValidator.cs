@@ -14,7 +14,7 @@ public class UpdateArticleRequestValidator : AbstractValidator<UpdateArticleRequ
         
         RuleFor(a => a.Description)
         .NotEmpty().WithMessage("Description is Required")
-        .Length(100,15000).WithMessage($"Description must be between 100 and {15000} characters.");
+        .Length(2,15000).WithMessage($"Description must be between 2 and {15000} characters.");
 
         RuleFor(a => a.Date)
         .NotEmpty().WithMessage("Date is Required");
