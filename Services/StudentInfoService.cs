@@ -3,16 +3,21 @@ using Ces_Platform_Server_Side.Responses;
 using Ces_Platform_Server_Side.Exceptions;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
+using Ces_Platform_Server_Side.Enums;
 
-public class StudentInfoService(IStudentInfoRepository repository) : IStudentInfoService 
+public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrapper<Teacher> logger) : IStudentInfoService 
 {
     public async Task<StudentInfoResponse> CreateStudentInfo(CreateStudentInfoRequest request, CancellationToken ct = default)
     {        
-        var newStudentInfo =  StudentInfo.Create(request,"testName");
+        // logging userRole is manager and userName is Anonymous as default if there is no authorization 
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
+        
+        var newStudentInfo =  StudentInfo.Create(request,userName);
 
-        newStudentInfo.Sources = request.Sources.Select(s => Source.Create(s,"testName")).ToList();
+        newStudentInfo.Sources = request.Sources.Select(s => Source.Create(s,userName)).ToList();
 
-        var skills = request.Skills.Select(s => Skill.Create(s,"testName"));
+        var skills = request.Skills.Select(s => Skill.Create(s,userName));
 
         // adding the new skills from the request to the skills table 
         
@@ -27,7 +32,13 @@ public class StudentInfoService(IStudentInfoRepository repository) : IStudentInf
             newStudentInfo.StudentInfoSkills.AddRange(oldSkills.Select(s => new StudentInfoSkill(){SkillId = s.Id}));
 
         if(!await repository.AddStudentInfoAsync(newStudentInfo,ct))
+        {
+            logger.LogError($"Error occured while adding a new newStudentInfo {newStudentInfo.Id} by {userName} at {DateTime.Now}", userRole);
+
             throw new InvalidOperationException("Error occured while adding the studentInfo");
+        }
+
+        logger.LogInformation($"Create new newStudentInfo {newStudentInfo.Id} by {userName} at {newStudentInfo.CreatedAtUtc}",userRole);
 
         var studentInfo = await repository.GetStudentInfoByIdAsync(newStudentInfo.Id);
 
@@ -36,14 +47,25 @@ public class StudentInfoService(IStudentInfoRepository repository) : IStudentInf
     
     public async Task UpdateStudentInfo(Guid studentInfoId,UpdateStudentInfoRequest request, CancellationToken ct = default)
     {   
+        // logging userRole is manager and userName is Anonymous as default if there is no authorization 
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
+
         var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
 
+
+
+
         if(studentInfo is null)
+        {
+            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
+            
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
+        }
 
         if(studentInfo.IsEqual(request))
             return;
-        studentInfo.Assign(request,"testName");
+        studentInfo.Assign(request,userName);
 
         // update the sources list 
         studentInfo.Sources.Clear();
@@ -62,7 +84,13 @@ public class StudentInfoService(IStudentInfoRepository repository) : IStudentInf
 
  
         if(!await repository.UpdateStudentInfoAsync(ct))
+        {
+            logger.LogError($"Error occured while updating the studentInfo {studentInfo.Id} at {DateTime.Now} by {userName}",userRole);
+            
             throw new InvalidOperationException("Error occured while updating the studentInfo");
+        }
+
+        logger.LogInformation($"updated studentInfo {studentInfo.Id} by {userName} at {studentInfo.LastModifiedAtUtc}",userRole);
     } 
 
     public async Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter? filter, CancellationToken ct = default)
@@ -90,20 +118,50 @@ public class StudentInfoService(IStudentInfoRepository repository) : IStudentInf
     }
     public async Task<StudentInfoResponse> GetStudentInfoById(Guid studentInfoId,CancellationToken ct)
     {
-        var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId,ct) ?? throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound); 
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
 
+        var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
+
+
+
+
+        if(studentInfo is null)
+        {
+            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
+            
+            throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
+        }
         return StudentInfoResponse.FromModel(studentInfo);
     } 
 
     public async Task DeleteStudentInfo(Guid studentInfoId, CancellationToken ct = default)
     {
+        var userName = "Anonymous";
+        var userRole = UserRole.Manager;
+
         var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
 
+
+
+
         if(studentInfo is null)
+        {
+            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
+            
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
+        }
+
+
         
-        if(!await repository.DeleteStudentInfoAsync(studentInfo,ct)) 
+        if(!await repository.DeleteStudentInfoAsync(studentInfo,ct))
+        {
+            logger.LogError($"Error occured while deleting the studentInfo {studentInfo.Id} at {DateTime.Now} by {userName}",userRole);  
+    
             throw new InvalidOperationException("Error occurd while deleting the studentInfo");
+        }
+
+        logger.LogInformation($"deleted studentInfo {studentInfo.Id} by {userName} at {DateTime.Now}",userRole);
     }
 
 }
