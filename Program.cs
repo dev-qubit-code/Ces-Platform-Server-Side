@@ -1,4 +1,4 @@
-using SPMS_PROJECT;
+using Ces_Platform_Server_Side;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +13,8 @@ if(!app.Environment.IsDevelopment())
 
 // app.UseStaticFiles();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.MapOpenApi();
 
     app.UseSwaggerUI(options =>
@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
         options.DisplayRequestDuration();
         options.EnableFilter();
     });
-}
+//}
 
 app.UseStatusCodePages();
 
@@ -33,9 +33,9 @@ app.UseRouting();
 
 app.UseCors();
 
-// app.UseAuthentication();
+app.UseAuthentication();
 
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

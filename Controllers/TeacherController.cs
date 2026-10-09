@@ -1,10 +1,12 @@
 using Asp.Versioning;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ces_Platform_Server_Side.Controllers;
 [ApiController]
+[Authorize("Manager/Admin")]
 [Route("api/v{version:apiVersion}/teachers")]
 [ApiVersion("1.0")]
 [Tags("Teachers")]

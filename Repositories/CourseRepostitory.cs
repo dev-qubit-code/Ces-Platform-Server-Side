@@ -32,7 +32,10 @@ namespace Ces_Platform_Server_Side.Repositories
 
         public async Task<(int, List<Models.Course>)> GetCoursePageAsync(CourseFilter? filter, CancellationToken ct = default)
         {
-            IQueryable<Course> courses = context.Courses;
+            IQueryable<Course> courses = context.Courses
+                .Include(c => c.Notes)
+                .Include(c => c.Tests);
+
             List<Course> Page;
             int TotalItems;
             

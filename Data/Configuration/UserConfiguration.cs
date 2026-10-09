@@ -9,7 +9,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("Users");
 
-        builder.HasIndex(u => u.Email);
+        builder.HasIndex(u => u.Email).IsUnique();
 
         builder.Property(i => i.Email).HasMaxLength(50).IsRequired();
 

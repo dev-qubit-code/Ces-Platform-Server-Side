@@ -1,17 +1,17 @@
 
 using Asp.Versioning;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
+using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
-using Ces_Platform_Server_Side.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/courses")]
 [ApiVersion("1.0")]
 [Tags("course")]
-public class CourseControllers(CourseService service) : ControllerBase
+public class CourseControllers(ICourseService service) : ControllerBase
 {
     [HttpPost]
     [Consumes("application/json")]
@@ -22,7 +22,8 @@ public class CourseControllers(CourseService service) : ControllerBase
     [EndpointName("CreateCourse")]
     [EndpointSummary("Create a new Course")]
     [EndpointDescription("Create a new course using Endpoint")]
-
+    
+    [Authorize(Policy = "Manager/Admin")]
     public async Task<ActionResult<CourseResponse>> CreateCourse(CreateCourseRequest request, CancellationToken ct = default)
     {
         var respons = await service.CreateCourse(request, ct);
@@ -71,6 +72,7 @@ public class CourseControllers(CourseService service) : ControllerBase
     [EndpointSummary("Delete a course Using Id")]
     [EndpointDescription("Delete a course By Id From Database")]
 
+    [Authorize(Policy = "Manager/Admin")]
     public async Task<ActionResult> DeleteCourseById(Guid Id,CancellationToken ct = default)
     {
         await service.DeleteCourse(Id);
@@ -88,6 +90,7 @@ public class CourseControllers(CourseService service) : ControllerBase
     [EndpointSummary("Update course Using Id")]
     [EndpointDescription("Update course Fields Using Id")]
 
+    [Authorize(Policy = "Manager/Admin")]
     public async Task<ActionResult> UpdateCourse(Guid Id,UpdateCourseRequest request,CancellationToken ct = default)
     {
         await service.UpdateCourse(Id, request, ct);

@@ -6,7 +6,9 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
 {
     public async Task<(int,List<Teacher>)> GetTeachersPageAsync(TeacherFilter? filter, CancellationToken ct = default)
     {
-        IQueryable<Teacher> teachers = context.Teachers;
+        IQueryable<Teacher> teachers = context.Teachers
+            .Include(t => t.Notes)
+            .Include(t => t.Tests);
 
         List<Teacher> page;
         int totalCount;
@@ -47,13 +49,8 @@ public class TeacherRepository(AppDbContext context) : ITeacherRepository
 
     public async Task<bool> UpdateTeacherAsync(CancellationToken ct = default) => await context.SaveChangesAsync(ct) > 0;
 
-    public async Task<bool> DeleteTeacherAsync(Guid teacherId, CancellationToken ct = default)
+    public async Task<bool> DeleteTeacherAsync(Teacher teacher, CancellationToken ct = default)
     {
-        var teacher = await context.Teachers.FirstOrDefaultAsync(u => u.Id == teacherId, ct);
-
-        if (teacher == null)
-            return false;
-
         context.Teachers.Remove(teacher);
         return await context.SaveChangesAsync(ct) > 0;
     }

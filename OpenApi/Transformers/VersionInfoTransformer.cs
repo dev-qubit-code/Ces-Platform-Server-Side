@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace SPMS_PROJECT.OpenApi.Transformers;
+namespace Ces_Platform_Server_Side.OpenApi.Transformers;
 
 internal sealed class VersionInfoTransformer : IOpenApiDocumentTransformer
 {

@@ -1,18 +1,21 @@
 using Asp.Versioning;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/users")]
 [ApiVersion("1.0")]
 [Tags("Users")]
+[Authorize("Admin")]
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpPost]
     [Consumes("application/json")]
     [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     [EndpointName("Create")]
     [EndpointSummary("Create user")]
@@ -29,6 +32,7 @@ public class UserController(IUserService userService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     [EndpointName("Update")]
     [EndpointSummary("Updates user")]
