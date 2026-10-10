@@ -16,20 +16,37 @@ namespace Ces_Platform_Server_Side.Controllers
     [Tags("tests")]
     public class TestControllers(ITestService service):ControllerBase
     {
+        [HttpPost("approved")]
+        [Consumes("application/json")]
+        [ProducesResponseType<TeacherResponse>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+        [EndpointName("CreateApprovedTest")]
+        [EndpointSummary("Create approved test")]
+        [EndpointDescription("Create approved test")]
+        [Authorize(Policy = "Manager/Admin")]
+
+        public async Task<ActionResult<TestResponse>> CreateApprovedTest([FromBody] CreateTestRequest request, CancellationToken ct = default)
+        {
+            var testResponse = await service.CreateApprovedTest(request, ct);
+
+            return CreatedAtAction(nameof(GettestById), new { testId = testResponse.Id }, testResponse);
+        }
+
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType<TeacherResponse>(StatusCodes.Status201Created)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
-        [EndpointName("CreateTest")]
-        [EndpointSummary("Create test")]
-        [EndpointDescription("Create test")]
-        [Authorize(Policy = "Manager/Admin")]
+        [EndpointName("CreatePendingTest")]
+        [EndpointSummary("Create pending test")]
+        [EndpointDescription("Create pending test")]
 
-        public async Task<ActionResult<TestResponse>> Createtest([FromBody] CreateTestRequest request, CancellationToken ct = default)
+        public async Task<ActionResult<TestResponse>> CreatePendingTest([FromBody] CreateTestRequest request, CancellationToken ct = default)
         {
-            var testResponse = await service.CreateTest(request, ct);
+            var testResponse = await service.CreatePendingTest(request, ct);
 
             return CreatedAtAction(nameof(GettestById), new { testId = testResponse.Id }, testResponse);
         }
@@ -97,6 +114,22 @@ namespace Ces_Platform_Server_Side.Controllers
         public async Task<ActionResult> Deletetest(Guid testId, CancellationToken ct = default)
         {
             await service.DeleteTest(testId, ct);
+
+            return NoContent();
+        }
+
+        [HttpPut("{testId:guid}/status")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+        [EndpointName("UpdateTestStatus")]
+        [EndpointSummary("User Activation")]
+        [EndpointDescription("User Activation.")]
+        public async Task<ActionResult> UpdateTestStatus(Guid testId,UpdateTestStatusRequest request, CancellationToken ct = default) 
+        {
+            await service.UpdateTestStatus(testId,request, ct);
 
             return NoContent();
         }
