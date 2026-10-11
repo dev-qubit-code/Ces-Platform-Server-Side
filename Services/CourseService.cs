@@ -35,6 +35,14 @@ namespace Ces_Platform_Server_Side.Services
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
+            var course = await repo.GetCourseByIdAsync(CourseId, ct);
+            if (course is null)
+            {
+                logger.LogWarning($"course {CourseId} not found at {DateTime.Now} requested by {username}", userRole);
+
+                throw new BusinessRuleException("cousrse not found", StatusCodes.Status404NotFound);
+            }
+
             bool sucess = await repo.DeleteCourseAsync(CourseId, ct);
 
             if (!sucess)
