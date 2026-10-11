@@ -46,6 +46,15 @@ namespace Ces_Platform_Server_Side.Services
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
+            var note = await repository.GetNoteByIdAsync(NoteId,ct);
+
+            if (note is null)
+            {
+                logger.LogWarning($"Note {NoteId} not found at {DateTime.Now} requested by {username}", userRole);
+
+                throw new BusinessRuleException("NOtenot found", StatusCodes.Status404NotFound);
+            }
+
             var sucsses = await repository.DeleteNoteAsync(NoteId, ct);
             if (sucsses)
             {
