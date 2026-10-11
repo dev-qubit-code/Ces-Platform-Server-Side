@@ -61,6 +61,12 @@ namespace Ces_Platform_Server_Side.Services
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
+            var test = await repository.GetTestByIdAsync(TestId, ct);
+            if (test is null) {
+                logger.LogWarning($"test {TestId} not found at {DateTime.Now} requested by {username}", userRole);
+
+                throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
+            }
             if (!await repository.DeleteTestAsync(TestId, ct)) 
             {
                 logger.LogError($"Error occured while deleting the Test {TestId} at {DateTime.Now} by {username}", userRole);
