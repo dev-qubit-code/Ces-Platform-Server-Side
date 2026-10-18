@@ -52,10 +52,10 @@ namespace Ces_Platform_Server_Side.Services
             {
                 logger.LogWarning($"Note {NoteId} not found at {DateTime.Now} requested by {username}", userRole);
 
-                throw new BusinessRuleException("NOtenot found", StatusCodes.Status404NotFound);
+                throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             }
 
-            var sucsses = await repository.DeleteNoteAsync(NoteId, ct);
+            var sucsses = await repository.DeleteNoteAsync(note, ct);
             if (sucsses)
             {
                 logger.LogInformation($"Delete Note {NoteId} by {username} at {DateTime.Now}", userRole);
