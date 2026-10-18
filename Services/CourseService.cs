@@ -43,7 +43,7 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("cousrse not found", StatusCodes.Status404NotFound);
             }
 
-            bool sucess = await repo.DeleteCourseAsync(CourseId, ct);
+            bool sucess = await repo.DeleteCourseAsync(course, ct);
 
             if (!sucess)
             {
