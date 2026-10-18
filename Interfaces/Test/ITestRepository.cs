@@ -9,7 +9,7 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<Test?> GetTestByIdAsync(Guid TestId, CancellationToken ct = default);
         public Task<bool> AddTestAsync(Test Test, CancellationToken ct = default);
         public Task<bool> UpdateTestAsync(CancellationToken ct = default);
-        public Task<bool> DeleteTestAsync(Guid TestId, CancellationToken ct = default);
+        public Task<bool> DeleteTestAsync(Test test, CancellationToken ct = default);
         public Task<int> GetTestsCountAsync(CancellationToken ct = default);
     }
 }

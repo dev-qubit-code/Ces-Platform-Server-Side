@@ -67,7 +67,7 @@ namespace Ces_Platform_Server_Side.Services
 
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
             }
-            if (!await repository.DeleteTestAsync(TestId, ct)) 
+            if (!await repository.DeleteTestAsync(test, ct)) 
             {
                 logger.LogError($"Error occured while deleting the Test {TestId} at {DateTime.Now} by {username}", userRole);
                 throw new InvalidOperationException("Error occurd while deleting the Test");
