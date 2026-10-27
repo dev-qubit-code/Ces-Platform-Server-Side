@@ -9,7 +9,7 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<Note?> GetNoteByIdAsync(Guid NoteId, CancellationToken ct = default);
         public Task<bool> AddNoteAsync(Note Note, CancellationToken ct = default);
         public Task<bool> UpdateNoteAsync(CancellationToken ct = default);
-        public Task<bool> DeleteNoteAsync(Guid NoteId, CancellationToken ct = default);
+        public Task<bool> DeleteNoteAsync(Note note, CancellationToken ct = default);
         public Task<int> GetNotesCountAsync(CancellationToken ct = default);
     }
 }
