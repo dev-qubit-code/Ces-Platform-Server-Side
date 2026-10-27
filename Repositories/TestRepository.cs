@@ -14,16 +14,10 @@ namespace Ces_Platform_Server_Side.Repositories
             return await context.SaveChangesAsync(ct) > 0;
         }
 
-        public async Task<bool> DeleteTestAsync(Guid TestId, CancellationToken ct = default)
+        public async Task<bool> DeleteTestAsync(Test test, CancellationToken ct = default)
         {
-            Test? test = await context.Tests.FindAsync(TestId);
-
-            if (test is null)
-                return false;
-
             context.Tests.Remove(test);
             return await context.SaveChangesAsync(ct) > 0;
-
         }
 
         public async Task<Test?> GetTestByIdAsync(Guid TestId, CancellationToken ct = default)
