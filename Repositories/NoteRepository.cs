@@ -13,16 +13,10 @@ namespace Ces_Platform_Server_Side.Repositories
 
             return await context.SaveChangesAsync(ct) > 0;
         }
-        public async Task<bool> DeleteNoteAsync(Guid NoteId, CancellationToken ct = default)
+        public async Task<bool> DeleteNoteAsync(Note note, CancellationToken ct = default)
         {
-            var note = await context.Notes.FindAsync(NoteId, ct);
-
-            if (note is null)
-                return false;
-
             context.Notes.Remove(note);
             return await context.SaveChangesAsync() > 0;
-
         }
         public async Task<Note?> GetNoteByIdAsync(Guid NoteId, CancellationToken ct = default)
         {
