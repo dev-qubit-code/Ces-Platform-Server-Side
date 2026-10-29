@@ -10,8 +10,10 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
     {
         builder.ToTable("Logs");
 
-        builder.Property(u => u.Message).IsRequired();
+        builder.Property(l => l.Message).IsRequired();
         
-        builder.Property(u => u.Role).HasConversion<string>().IsRequired();
+        builder.Property(l => l.Role).HasConversion<string>().IsRequired();
+
+        builder.Property(l => l.CreatedAtUtc).IsRequired();
     }
 }
