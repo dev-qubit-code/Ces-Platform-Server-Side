@@ -25,11 +25,10 @@ namespace Ces_Platform_Server_Side.Services
             if (await repository.AddTestAsync(test, ct))
             {
                 Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
-                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc}", userRole);
+                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc} status: {test.Status}", userRole);
 
                 return TestResponse.FromModel(Fulltest!);
             }
-            logger.LogWarning($"Error occured while adding an Approved test testId {test.Id} by {username} at {test.CreatedAtUtc};", userRole);
             throw new InvalidOperationException("Error occured while adding the test");
         }
 
@@ -45,11 +44,10 @@ namespace Ces_Platform_Server_Side.Services
             if (await repository.AddTestAsync(test, ct))
             {
                 Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
-                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc}", userRole);
+                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc} status: {test.Status}", userRole);
 
                 return TestResponse.FromModel(Fulltest!);
             }
-            logger.LogWarning($"Error occured while adding an Approved test testId {test.Id} by {username} at {test.CreatedAtUtc};", userRole);
 
             throw new InvalidOperationException("Error occured while adding the test");
         }
@@ -63,16 +61,14 @@ namespace Ces_Platform_Server_Side.Services
 
             var test = await repository.GetTestByIdAsync(TestId, ct);
             if (test is null) {
-                logger.LogWarning($"test {TestId} not found at {DateTime.Now} requested by {username}", userRole);
 
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
             }
             if (!await repository.DeleteTestAsync(test, ct)) 
             {
-                logger.LogError($"Error occured while deleting the Test {TestId} at {DateTime.Now} by {username}", userRole);
                 throw new InvalidOperationException("Error occurd while deleting the Test");
             }
-            logger.LogInformation($"deleted test {TestId} by {username} at {DateTime.UtcNow}", userRole);
+            logger.LogInformation($"deleted test {TestId} by {username} at {DateTime.UtcNow} status: {test.Status}", userRole);
         }
 
         public async Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter? filter, CancellationToken ct = default)
@@ -100,16 +96,10 @@ namespace Ces_Platform_Server_Side.Services
 
         public async Task<TestResponse> GetTestById(Guid TestId, CancellationToken ct)
         {
-            var principal = accessor.HttpContext!.User;
-
-            var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-            var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
-
             Test? test =  await repository.GetTestByIdAsync(TestId,ct);
 
             if (test is null)
             {
-                logger.LogWarning($"User {TestId} not found at {DateTime.Now} requested by {username}", userRole);
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
             }
             return TestResponse.FromModel(test);
@@ -126,7 +116,6 @@ namespace Ces_Platform_Server_Side.Services
 
             if (test is null)
             {
-                logger.LogWarning($"test {TestId} not found at {DateTime.Now} requested by {username}", userRole);
 
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
             }
@@ -137,11 +126,10 @@ namespace Ces_Platform_Server_Side.Services
             
             if(!await repository.UpdateTestAsync(ct))
             {
-                logger.LogError($"Error occured while updating the test {test.Id} at {DateTime.Now} by {username}", userRole);
 
                 throw new InvalidOperationException("Error occured while updating the test");
             }
-            logger.LogInformation($"updated test {test.Id} activation by {username} at {test.LastModifiedAtUtc}", userRole);
+            logger.LogInformation($"updated test {test.Id} activation by {username} at {test.LastModifiedAtUtc} status: {test.Status}", userRole);
 
         }
 
@@ -156,7 +144,6 @@ namespace Ces_Platform_Server_Side.Services
 
             if(test is null)
             {
-                logger.LogWarning($"test {testId} not found at {DateTime.Now} requested by {username}", userRole);
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
             }
             if (test.Status == request.Status)
@@ -166,11 +153,10 @@ namespace Ces_Platform_Server_Side.Services
 
             if (!await repository.UpdateTestAsync(ct))
             {
-                logger.LogError($"Error occured while updating the test status {test.Id} at {DateTime.Now} by {username}", userRole);
 
                 throw new InvalidOperationException("Error occured while updating the test activation");
             }
-            logger.LogInformation($"updated test status {test.Id} activation by {username} at {test.LastModifiedAtUtc}", userRole);
+            logger.LogInformation($"updated test status {test.Id} activation by {username} at {test.LastModifiedAtUtc} status: {test.Status}", userRole);
 
         }
     }

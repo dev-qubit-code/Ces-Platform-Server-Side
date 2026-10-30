@@ -1,5 +1,8 @@
+using System.Security.Claims;
 using Asp.Versioning;
 using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.Interfaces;
+using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -21,14 +24,8 @@ public class DashboardController : ControllerBase
     [EndpointName("GetDashboardStatus")]
     [EndpointSummary("Get dashboard status")]
     [EndpointDescription("Get dashboard status")]
-    public async Task<DashboardResponse> GetDashboardStatus(AppDbContext context) 
-    {
-        var logCount = await context.Logs.CountAsync();
-        var logPage = 5;
-        var skipCount = logCount - logPage - 1;
-
-        if(skipCount <= logPage)
-            skipCount = 0; 
+    public async Task<DashboardResponse> GetDashboardStatus(AppDbContext context, ILogService logService) 
+    {    
         return new()
         {
             UsersCount = await context.Users.CountAsync(),
@@ -37,7 +34,7 @@ public class DashboardController : ControllerBase
             PendingTestsCount = await context.Tests.Where(t => t.Status == TestStatus.Pending).CountAsync(),
             NotesCount = await context.Notes.CountAsync(),
             StudentInfoCount = await context.StudentInfos.CountAsync(),
-            DashboardLogs = context.Logs.Skip(skipCount).Take(logPage).Select(DashboardLogResponse.FromModel).ToList()
+            DashboardLogs = await logService.GetLastFiveLogs(User)
         };
     }
 }

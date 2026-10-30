@@ -20,7 +20,6 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
 
         if(!await repository.AddTeacherAsync(teacher,ct))
         {   
-            logger.LogError($"Error occured while adding a new teacher {teacher.Id} by {username} at {DateTime.Now}", userRole);
 
             throw new InvalidOperationException("Error occured while adding the teacher");
         }
@@ -41,7 +40,6 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
 
         if(teacher is null)
         {
-            logger.LogWarning($"Teacher {teacherId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("Teacher not found",StatusCodes.Status404NotFound);
         }
@@ -52,7 +50,6 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
  
         if(!await repository.UpdateTeacherAsync(ct))
         {
-            logger.LogError($"Error occured while updating the teacher {teacher.Id} at {DateTime.Now} by {username}",userRole);
 
             throw new InvalidOperationException("Error occured while updating the teacher");
         }
@@ -86,16 +83,11 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
     }
     public async Task<TeacherResponse> GetTeacherById(Guid teacherId,CancellationToken ct)
     {
-        var principal = accessor.HttpContext!.User;
-        
-        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);   
 
         var teacher = await repository.GetTeacherByIdAsync(teacherId,ct);
         
         if(teacher is null)
         {
-            logger.LogWarning($"Teacher {teacherId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("Teacher not found",StatusCodes.Status404NotFound);
         }
@@ -114,14 +106,12 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
 
         if(teacher is null)
         {
-            logger.LogWarning($"Teacher {teacherId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("Teacher not found",StatusCodes.Status404NotFound);
         }
 
         if(!await repository.DeleteTeacherAsync(teacher, ct))
         {
-            logger.LogError($"Error occured while deleting the teacher {teacher.Id} at {DateTime.Now} by {username}",userRole);  
 
             throw new InvalidOperationException("Error occurd while deleting the teacher");
         }

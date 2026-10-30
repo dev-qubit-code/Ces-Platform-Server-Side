@@ -33,7 +33,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
         if(!await repository.AddStudentInfoAsync(newStudentInfo,ct))
         {
-            logger.LogError($"Error occured while adding a new newStudentInfo {newStudentInfo.Id} by {userName} at {DateTime.Now}", userRole);
 
             throw new InvalidOperationException("Error occured while adding the studentInfo");
         }
@@ -58,7 +57,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
         if(studentInfo is null)
         {
-            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
             
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
         }
@@ -85,7 +83,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
  
         if(!await repository.UpdateStudentInfoAsync(ct))
         {
-            logger.LogError($"Error occured while updating the studentInfo {studentInfo.Id} at {DateTime.Now} by {userName}",userRole);
             
             throw new InvalidOperationException("Error occured while updating the studentInfo");
         }
@@ -118,9 +115,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
     }
     public async Task<StudentInfoResponse> GetStudentInfoById(Guid studentInfoId,CancellationToken ct)
     {
-        var userName = "Anonymous";
-        var userRole = UserRole.Manager;
-
         var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
 
 
@@ -128,7 +122,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
         if(studentInfo is null)
         {
-            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
             
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
         }
@@ -147,7 +140,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
         if(studentInfo is null)
         {
-            logger.LogWarning($"studentInfo {studentInfoId} not found at {DateTime.Now} requested by {userName}",userRole);
             
             throw new BusinessRuleException("StudentInfo not found",StatusCodes.Status404NotFound);
         }
@@ -156,7 +148,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
         
         if(!await repository.DeleteStudentInfoAsync(studentInfo,ct))
         {
-            logger.LogError($"Error occured while deleting the studentInfo {studentInfo.Id} at {DateTime.Now} by {userName}",userRole);  
     
             throw new InvalidOperationException("Error occurd while deleting the studentInfo");
         }

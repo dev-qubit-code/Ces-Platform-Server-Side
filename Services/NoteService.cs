@@ -35,7 +35,6 @@ namespace Ces_Platform_Server_Side.Services
 
                 return AddedNote;
             }
-            logger.LogError($"Error occured while adding a new Note {CreatedNote.Id} by {username} at {DateTime.Now}", userRole);
 
             throw new InvalidOperationException("Error occured while adding the note");
         }
@@ -50,7 +49,6 @@ namespace Ces_Platform_Server_Side.Services
 
             if (note is null)
             {
-                logger.LogWarning($"Note {NoteId} not found at {DateTime.Now} requested by {username}", userRole);
 
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             }
@@ -62,22 +60,16 @@ namespace Ces_Platform_Server_Side.Services
             }
             else
             {
-                logger.LogError($"Error occured while Delete a Note {NoteId} by {username} at {DateTime.Now}", userRole);
                 throw new InvalidOperationException("Error occured while Delete the note");
             }
         }
         public async Task<NoteResponse> GetNoteById(Guid NoteId, CancellationToken ct)
         {
-            var principal = accessor.HttpContext!.User;
-
-            var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-            var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
-
+       
             Note? FoundNote = await repository.GetNoteByIdAsync(NoteId, ct);
 
             if (FoundNote is null)
                 {
-                logger.LogWarning($"Note {NoteId} not found at {DateTime.Now} requested by {username}", userRole);
 
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             }
@@ -122,7 +114,6 @@ namespace Ces_Platform_Server_Side.Services
             var note = await repository.GetNoteByIdAsync(NoteId);
             if (note is null)
             {
-                logger.LogWarning($"User {NoteId} not found at {DateTime.Now} requested by {username}", userRole);
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
 
             }

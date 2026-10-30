@@ -18,12 +18,13 @@ namespace Ces_Platform_Server_Side.Services
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
+
             Course course = Course.Create(request, username!);
             if (!await repo.AddCourseAsync(course, ct))
             {
-                logger.LogWarning($"Error occured while adding the course courseId {course.Id} by {username} at {course.CreatedAtUtc}",userRole);
                 throw new InvalidOperationException("Error occured while adding the course");
             }
+            logger.LogInformation($"Create new course {course.Id} by {username} at {course.CreatedAtUtc}",userRole);
             return CourseResponse.FromModel(course);
             
         }
@@ -38,7 +39,6 @@ namespace Ces_Platform_Server_Side.Services
             var course = await repo.GetCourseByIdAsync(CourseId, ct);
             if (course is null)
             {
-                logger.LogWarning($"course {CourseId} not found at {DateTime.Now} requested by {username}", userRole);
 
                 throw new BusinessRuleException("cousrse not found", StatusCodes.Status404NotFound);
             }
@@ -68,7 +68,6 @@ namespace Ces_Platform_Server_Side.Services
 
             if(course is null )
             {
-                logger.LogWarning($"course {CourseId} not found at {DateTime.Now} requested by {username}", userRole);
                 throw new BusinessRuleException("Course Not found", StatusCodes.Status404NotFound); 
             }
 

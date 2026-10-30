@@ -19,7 +19,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
             if(!await repository.AddUserAsync(newUser, ct))
             {
-                logger.LogError($"Error occured while adding a new user {newUser.Id} by {username} at {DateTime.Now}", userRole);
 
                 throw new InvalidOperationException("Error occured while adding the new user");
             }        
@@ -40,7 +39,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
         if(user is null)
         {
-            logger.LogWarning($"User {userId} not found at {DateTime.Now}",userRole);
 
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
         }
@@ -52,7 +50,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
  
         if(!await repository.UpdateUserAsync(ct))
         {
-            logger.LogError($"Error occured while updating the user {user.Id} at {DateTime.Now} by {username}",userRole);
 
             throw new InvalidOperationException("Error occured while updating the user");
         }
@@ -86,14 +83,9 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
     public async Task<UserResponse> GetUserById(Guid userId,CancellationToken ct)
     {
         var user = await repository.GetUserByIdAsync(userId,ct);
-
-        var principal = accessor.HttpContext!.User;
-        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
         
         if(user is null)
         {
-            logger.LogWarning($"User {userId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
         }
@@ -112,14 +104,12 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
         if(user is null)
         {
-            logger.LogWarning($"User {userId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
         }
 
         if(!await repository.DeleteUserAsync(userId, ct))
         {
-            logger.LogError($"Error occured while deleting the user {user.Id} at {DateTime.Now} by {username}",userRole);  
 
             throw new InvalidOperationException("Error occurd while deleting the user");
         }
@@ -138,7 +128,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
         if(user is null)
         {
-            logger.LogWarning($"User {userId} not found at {DateTime.Now} requested by {username}",userRole);
 
             throw new BusinessRuleException("User not found",StatusCodes.Status404NotFound);
         }
@@ -152,7 +141,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         
         if(!await repository.UpdateUserAsync(ct))
         {
-            logger.LogError($"Error occured while updating the user activation {user.Id} at {DateTime.Now} by {username}",userRole);
             
             throw new InvalidOperationException("Error occured while updating the user activation");
         }
