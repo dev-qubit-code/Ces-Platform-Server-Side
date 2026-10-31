@@ -44,4 +44,6 @@ public class LogRepository(AppDbContext context) : ILogRepository
         return (totalCount,page);
     }
 
+    public List<Log> GetLastFiveLogs(UserRole role) => context.Logs.Where(l => l.Role == role).OrderByDescending(l => l.CreatedAtUtc).Take(5).ToList();
+
 }

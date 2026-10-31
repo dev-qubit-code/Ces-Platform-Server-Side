@@ -14,16 +14,10 @@ namespace Ces_Platform_Server_Side.Repositories
             return await context.SaveChangesAsync(ct) > 0;
         }
 
-        public async Task<bool> DeleteTestAsync(Guid TestId, CancellationToken ct = default)
+        public async Task<bool> DeleteTestAsync(Test test, CancellationToken ct = default)
         {
-            Test? test = await context.Tests.FindAsync(TestId);
-
-            if (test is null)
-                return false;
-
             context.Tests.Remove(test);
             return await context.SaveChangesAsync(ct) > 0;
-
         }
 
         public async Task<Test?> GetTestByIdAsync(Guid TestId, CancellationToken ct = default)
@@ -58,16 +52,16 @@ namespace Ces_Platform_Server_Side.Repositories
             filter.Page = Math.Max(1, filter.Page);
             filter.PageSize = Math.Clamp(filter.PageSize, 1, 100);
 
+            ApplyFilters(tests, filter);
+
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                tests = tests.Where(n => n.Teacher.Name.Contains(filter.Search))
-                    .Where(n => n.Course.Name.Contains(filter.Search));
-
-                totalTests = await context.Tests.CountAsync(ct);
+                ApplySearchTerm(tests, filter.Search);
             }
 
-            if(filter.Status != TestStatus.None)
-                tests = tests.Where(t => t.Status == filter.Status);
+            ApplySorting(tests, filter.SortColumn, filter.SortDirection);
+
+            
                 
             totalTests = await context.Tests.CountAsync(ct);
 
@@ -81,5 +75,38 @@ namespace Ces_Platform_Server_Side.Repositories
 
         public async Task<bool> UpdateTestAsync(CancellationToken ct = default)
             => await context.SaveChangesAsync(ct) > 0 ;
+
+        private static IQueryable<Test> ApplyFilters(IQueryable<Test> query,TestFilter filter)
+        {
+            if(filter.TestKind != TestKind.None)
+                query = query.Where(t => t.Kind == filter.TestKind);
+
+            if(filter.Status != TestStatus.None)
+                query = query.Where(t => t.Status == filter.Status);
+
+            return query;
+        }
+
+        private static IQueryable<Test> ApplySearchTerm(IQueryable<Test> query, string searchTerm)
+        {      
+            var normalized = searchTerm.Trim().ToLower();
+
+            query = query.Where(t => t.Course.Name.ToLower().Contains(normalized));
+
+            return query;
+        }
+
+        private static IQueryable<Test> ApplySorting(IQueryable<Test> query, string sortColumn, string sortDirection)
+        {
+            var isDescending = sortDirection.Equals("desc", StringComparison.CurrentCultureIgnoreCase);
+
+            return sortColumn.ToLower() switch
+            {
+                "createdatutc" => isDescending ? query.OrderByDescending(t => t.CreatedAtUtc) : query.OrderBy(t => t.CreatedAtUtc),
+                "teachername" => isDescending ? query.OrderByDescending(t => t.Teacher.Name) : query.OrderBy(t => t.Teacher.Name),
+                "coursename" => isDescending ? query.OrderByDescending(t => t.Course.Name) : query.OrderBy(t => t.Course.Name),
+                _ => query.OrderByDescending(t => t.CreatedAtUtc)
+            };
+        }
     }
 }

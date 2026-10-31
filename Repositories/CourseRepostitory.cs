@@ -15,15 +15,10 @@ namespace Ces_Platform_Server_Side.Repositories
             return RowAffrcted > 0;
         }
 
-        public async Task<bool> DeleteCourseAsync(Guid CourseId, CancellationToken ct = default)
+        public async Task<bool> DeleteCourseAsync(Course Course, CancellationToken ct = default)
         {
-            Models.Course? course = await context.Courses.FirstOrDefaultAsync(C => C.Id == CourseId);
-
-            if (course is null) return false;
-
-            context.Courses.Remove(course);
+            context.Courses.Remove(Course);
             return await context.SaveChangesAsync(ct) > 0;
-
         }
 
         public Task<int> GetCountAsync(Models.Course course, CancellationToken ct = default) => context.Courses.CountAsync(ct);
