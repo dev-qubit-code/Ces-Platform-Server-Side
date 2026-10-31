@@ -75,12 +75,18 @@ namespace Ces_Platform_Server_Side.Repositories
         {
             var courseNameNormalized = filter.CourseName.Trim().ToLower();
             var teacherNameNormalized = filter.TeacherName.Trim().ToLower();
+            var thisYear = DateTimeOffset.UtcNow.Year;
 
             if(!string.IsNullOrWhiteSpace(courseNameNormalized))
                 query = query.Where(n => n.Course.Name.ToLower() == courseNameNormalized);
 
             if(!string.IsNullOrWhiteSpace(filter.TeacherName))
                 query = query.Where(n => n.Teacher.Name.ToLower() == filter.TeacherName);
+
+            if(filter.Year != thisYear)
+                query = query.Where(n => n.Date.Year == filter.Year);
+            else
+                query = query.Where(n => n.Date.Year == thisYear);
 
             return query;
         }
