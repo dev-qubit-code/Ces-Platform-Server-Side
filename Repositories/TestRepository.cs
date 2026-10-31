@@ -78,11 +78,19 @@ namespace Ces_Platform_Server_Side.Repositories
 
         private static IQueryable<Test> ApplyFilters(IQueryable<Test> query,TestFilter filter)
         {
+            var thisYear = DateTimeOffset.UtcNow.Year;
+
             if(filter.TestKind != TestKind.None)
                 query = query.Where(t => t.Kind == filter.TestKind);
 
             if(filter.Status != TestStatus.None)
                 query = query.Where(t => t.Status == filter.Status);
+
+            if(filter.Year != thisYear)
+                query = query.Where(t => t.Date.Year == filter.Year);
+            else
+                query = query.Where(t => t.Date.Year == thisYear);
+
 
             return query;
         }
