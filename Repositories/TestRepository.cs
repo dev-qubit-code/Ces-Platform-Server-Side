@@ -102,7 +102,9 @@ namespace Ces_Platform_Server_Side.Repositories
 
             return sortColumn.ToLower() switch
             {
-                "createdat" => isDescending ? query.OrderByDescending(t => t.CreatedAtUtc) : query.OrderBy(t => t.CreatedAtUtc),
+                "createdatutc" => isDescending ? query.OrderByDescending(t => t.CreatedAtUtc) : query.OrderBy(t => t.CreatedAtUtc),
+                "teachername" => isDescending ? query.OrderByDescending(t => t.Teacher.Name) : query.OrderBy(t => t.Teacher.Name),
+                "coursename" => isDescending ? query.OrderByDescending(t => t.Course.Name) : query.OrderBy(t => t.Course.Name),
                 _ => query.OrderByDescending(t => t.CreatedAtUtc)
             };
         }
