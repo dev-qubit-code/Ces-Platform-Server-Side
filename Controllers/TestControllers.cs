@@ -119,6 +119,7 @@ namespace Ces_Platform_Server_Side.Controllers
         }
 
         [HttpPut("{testId:guid}/status")]
+        [Authorize(Policy = "Manager/Admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
