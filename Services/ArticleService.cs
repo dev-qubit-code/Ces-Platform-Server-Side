@@ -22,7 +22,6 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
 
         if(!await repository.AddArticleAsync(article, ct))
         {
-            logger.LogError($"Error occured while adding a new article {article.Id} by {username} at {DateTime.Now}", userRole);
             
             throw new InvalidOperationException("Error occured while adding the article");
         }
@@ -43,7 +42,6 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
 
         if(article is null)
         {
-            logger.LogWarning($"article {articleId} not found at {DateTime.Now} requested by {username}",userRole);
             
             throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
         }
@@ -55,7 +53,6 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
  
         if(!await repository.UpdateArticleAsync(ct))
         {
-            logger.LogError($"Error occured while updating the article {article.Id} at {DateTime.Now} by {username}",userRole);
 
             throw new InvalidOperationException("Error occured while updating the article");
         }
@@ -89,16 +86,11 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
     }
     public async Task<ArticleResponse> GetArticleById(Guid articleId,CancellationToken ct)
     {
-        var principal = accessor.HttpContext!.User;
-
-        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
         var article = await repository.GetArticleByIdAsync(articleId);
 
         if(article is null)
         {
-            logger.LogWarning($"article {articleId} not found at {DateTime.Now} requested by {username}",userRole);
             
             throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
         }
@@ -117,14 +109,12 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
 
         if(article is null)
         {
-            logger.LogWarning($"article {articleId} not found at {DateTime.Now} requested by {username}",userRole);
             
             throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
         } 
 
         if(!await repository.DeleteArticleAsync(article, ct))
         {
-            logger.LogError($"Error occured while deleting the article {article.Id} at {DateTime.Now} by {username}",userRole);  
             
             throw new InvalidOperationException("Error occurd while deleting the article");
         } 

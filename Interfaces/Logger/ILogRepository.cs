@@ -7,4 +7,5 @@ public interface ILogRepository
 {
     public Task<(int,List<Log>)> GetLogsPageAsync(LogFilter? filter,UserRole role, CancellationToken ct = default);
     public bool AddLog(Log user);
+    public List<Log> GetLastFiveLogs(UserRole role);
 }

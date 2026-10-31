@@ -20,7 +20,6 @@ public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> 
 
         if(!await repository.AddReportAsync(report,ct))
         {
-            logger.LogError($"Error occured while adding a new report {report.Id} by {userName} at {DateTime.Now}", userRole);
 
             throw new InvalidOperationException("Error occured while adding the report");
         }
@@ -54,16 +53,11 @@ public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> 
     }
     public async Task<ReportResponse> GetReportById(Guid reportId,CancellationToken ct)
     {
-        // logging userRole is manager and userName is Anonymous as default if there is no authorization 
-        var userName = "Anonymous";
-        var userRole = UserRole.Manager;
 
         var report = await repository.GetReportByIdAsync(reportId,ct);
         
         if(report is null)
         {
-            logger.LogWarning($"Report {reportId} not found at {DateTime.Now} requested by {userName}",userRole);
-
             throw new BusinessRuleException("Report not found",StatusCodes.Status404NotFound); 
         }
         

@@ -1,4 +1,5 @@
 ﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
+using Ces_Platform_Server_Side.Models;
 
 namespace Ces_Platform_Server_Side.Interfaces 
 {
@@ -8,7 +9,7 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<Models.Course?> GetCourseByIdAsync(Guid Id, CancellationToken ct = default);
         public Task<bool> AddCourseAsync(Models.Course course, CancellationToken ct = default);
         public Task<bool> UpdateCourseAsync(CancellationToken ct = default);
-        public Task<bool> DeleteCourseAsync(Guid CourseId, CancellationToken ct = default);
+        public Task<bool> DeleteCourseAsync(Course Course, CancellationToken ct = default);
         public Task<int> GetCountAsync(Models.Course course, CancellationToken ct = default);
 
     }
