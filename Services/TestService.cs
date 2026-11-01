@@ -73,7 +73,7 @@ namespace Ces_Platform_Server_Side.Services
 
         public async Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter? filter, CancellationToken ct = default)
         {
-            (int totalTests, List<Test> tests) = await repository.GetTestsPageAsync(filter, ct);
+            (int totalTests, List<TestPageResponse> tests) = await repository.GetTestsPageAsync(filter, ct);
 
             filter ??= new();
 
@@ -87,7 +87,7 @@ namespace Ces_Platform_Server_Side.Services
             }
 
             return PagedResult<TestPageResponse>.Create(
-                TestPageResponse.FromModels(tests),
+                tests,
                 totalTests, 
                 filter.Page, 
                 filter.PageSize);

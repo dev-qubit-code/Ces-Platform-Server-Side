@@ -2,6 +2,7 @@
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Responses;
 using Microsoft.EntityFrameworkCore;
  
 namespace Ces_Platform_Server_Side.Repositories
@@ -31,42 +32,45 @@ namespace Ces_Platform_Server_Side.Repositories
         public async Task<int> GetTestsCountAsync(CancellationToken ct = default)
             => await context.Tests.CountAsync(ct);
 
-        public async Task<(int, List<Test>)> GetTestsPageAsync(TestFilter? filter, CancellationToken ct = default)
+        public async Task<(int, List<TestPageResponse>)> GetTestsPageAsync(TestFilter? filter, CancellationToken ct = default)
         {
             int totalTests;
-            List<Test> PageItem;
+            List<TestPageResponse> PageItem;
             IQueryable<Test> tests = context.Tests;
            
             if(filter is null)
             {
                 totalTests = await context.Tests.CountAsync(ct);
 
-                PageItem = await context.Tests
-                    .Include(i => i.Teacher)
-                    .Include(i => i.Course)
-                    .Take(10)
-                    .ToListAsync(ct);
+                PageItem = TestPageResponse.FromModels(await tests.Take(10).ToListAsync(ct)).ToList();
                 return (totalTests, PageItem);
             }
 
             filter.Page = Math.Max(1, filter.Page);
             filter.PageSize = Math.Clamp(filter.PageSize, 1, 100);
 
-            ApplyFilters(tests, filter);
+            tests = ApplyFilters(tests, filter);
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                ApplySearchTerm(tests, filter.Search);
-            }
+                tests = ApplySearchTerm(tests, filter.Search);
 
-            ApplySorting(tests, filter.SortColumn, filter.SortDirection);
-
-            
+            tests = ApplySorting(tests, filter.SortColumn, filter.SortDirection);
                 
-            totalTests = await context.Tests.CountAsync(ct);
+            totalTests = await tests.CountAsync(ct);
 
-            PageItem = await tests.Include(t => t.Teacher).Include(c => c.Course).Skip((filter.Page - 1) * filter.PageSize)
+            PageItem = await tests.Skip((filter.Page - 1) * filter.PageSize)
                           .Take(filter.PageSize)
+                          .Select(t => new TestPageResponse
+                          { 
+                            Id = t.Id,
+                            Status = t.Status,
+                            TeacherId = t.TeacherId,
+                            CourseId = t.CourseId,
+                            CourseName = t.Course.Name,
+                            TeacherName = t.Teacher.Name,
+                            Date = t.Date,
+                            Kind = t.Kind,
+                          })
                           .ToListAsync(ct);
          
             return (totalTests, PageItem);
@@ -91,7 +95,6 @@ namespace Ces_Platform_Server_Side.Repositories
             else
                 query = query.Where(t => t.Date.Year == thisYear);
 
-
             return query;
         }
 
@@ -108,13 +111,15 @@ namespace Ces_Platform_Server_Side.Repositories
         {
             var isDescending = sortDirection.Equals("desc", StringComparison.CurrentCultureIgnoreCase);
 
-            return sortColumn.ToLower() switch
+            query = sortColumn.ToLower() switch
             {
                 "createdatutc" => isDescending ? query.OrderByDescending(t => t.CreatedAtUtc) : query.OrderBy(t => t.CreatedAtUtc),
                 "teachername" => isDescending ? query.OrderByDescending(t => t.Teacher.Name) : query.OrderBy(t => t.Teacher.Name),
                 "coursename" => isDescending ? query.OrderByDescending(t => t.Course.Name) : query.OrderBy(t => t.Course.Name),
                 _ => query.OrderByDescending(t => t.CreatedAtUtc)
             };
+
+            return query;
         }
     }
 }
