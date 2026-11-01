@@ -42,7 +42,22 @@ namespace Ces_Platform_Server_Side.Repositories
             {
                 totalTests = await context.Tests.CountAsync(ct);
 
-                PageItem = TestPageResponse.FromModels(await tests.Take(10).ToListAsync(ct)).ToList();
+                PageItem = await tests
+                .OrderByDescending(t => t.CreatedAtUtc)
+                .Take(10)
+                .Select(t => new TestPageResponse
+                          { 
+                            Id = t.Id,
+                            Status = t.Status,
+                            TeacherId = t.TeacherId,
+                            CourseId = t.CourseId,
+                            CourseName = t.Course.Name,
+                            TeacherName = t.Teacher.Name,
+                            Date = t.Date,
+                            Kind = t.Kind,
+                          })
+                .ToListAsync(ct);
+
                 return (totalTests, PageItem);
             }
 
