@@ -10,4 +10,5 @@ public interface IStudentInfoService
     public  Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter? filter, CancellationToken ct = default);
     public  Task<StudentInfoResponse> GetStudentInfoById(Guid studentInfoId,CancellationToken ct);
     public  Task DeleteStudentInfo(Guid studentInfoId, CancellationToken ct = default);
+    public  Task<List<SkillResponse>> GetAllSkills();
 }

@@ -1,4 +1,5 @@
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Responses;
 
 namespace Ces_Platform_Server_Side.Interfaces;
 
@@ -11,4 +12,5 @@ public interface IStudentInfoRepository
     public Task<bool> DeleteStudentInfoAsync(StudentInfo studentInfo, CancellationToken ct = default);
     public Task<int> GetStudentInfosCountAsync(CancellationToken ct = default);
     public Task<IEnumerable<Skill>> GetOldSkills(IEnumerable<string> skills, CancellationToken ct = default);
+    public Task<List<SkillResponse>> GetAllSkills();
 }

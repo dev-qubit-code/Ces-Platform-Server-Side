@@ -86,4 +86,17 @@ public class StudentInfoController(IStudentInfoService studentInfoService) : Con
 
         return NoContent();
     }
+
+    // skills endpoints
+    [HttpGet("skills")]
+    [Consumes("application/json")]
+    [ProducesResponseType<List<SkillResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+    [EndpointName("GetAllSkill")]
+    [EndpointSummary("Get all skills")]
+    [EndpointDescription("Get all skills")]
+    public async Task<List<SkillResponse>> GetAllSkill() 
+    {
+        return await studentInfoService.GetAllSkills();
+    }
 }
