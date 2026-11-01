@@ -155,4 +155,6 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
         logger.LogInformation($"deleted studentInfo {studentInfo.Id} by {userName} at {DateTime.Now}",userRole);
     }
 
+    // skills services
+    public async Task<List<SkillResponse>> GetAllSkills() => await repository.GetAllSkills();
 }

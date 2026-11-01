@@ -1,6 +1,7 @@
 using Ces_Platform_Server_Side.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Responses;
 
 public class StudentInfoRepository(AppDbContext context) : IStudentInfoRepository
 {
@@ -77,4 +78,9 @@ public class StudentInfoRepository(AppDbContext context) : IStudentInfoRepositor
         
         return  oldSkills.ToList();
     } 
+
+    // skills query
+    public async Task<List<SkillResponse>> GetAllSkills() => await context.Skills
+        .Select(s => new SkillResponse { Id = s.Id, Name = s.Name})
+        .ToListAsync();
 }
