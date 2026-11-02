@@ -77,11 +77,10 @@ namespace Ces_Platform_Server_Side.Services
                 return NoteResponse.FromModel(FoundNote);
             
         }
-        public async Task<PagedResult<NotePageResponse>> GetPagedNotes(NoteFilter? filter, CancellationToken ct = default)
+        public async Task<PagedResult<NotePageResponse>> GetPagedNotes(NoteFilter filter, CancellationToken ct = default)
         {
-            (int CountOfItems, List<Note> notes) = await repository.GetNotesPageAsync(filter, ct);
+            (int CountOfItems, List<NotePageResponse> notes) = await repository.GetNotesPageAsync(filter, ct);
 
-            filter ??= new();
 
             if (notes is null || !notes.Any())
                 return PagedResult<NotePageResponse>.Create(
@@ -92,7 +91,7 @@ namespace Ces_Platform_Server_Side.Services
                 );
 
             return PagedResult<NotePageResponse>.Create(
-                NotePageResponse.FromModels(notes),
+                notes,
                 CountOfItems,
                 filter.Page,
                 filter.PageSize
