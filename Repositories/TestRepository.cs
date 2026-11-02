@@ -32,34 +32,13 @@ namespace Ces_Platform_Server_Side.Repositories
         public async Task<int> GetTestsCountAsync(CancellationToken ct = default)
             => await context.Tests.CountAsync(ct);
 
-        public async Task<(int, List<TestPageResponse>)> GetTestsPageAsync(TestFilter? filter, CancellationToken ct = default)
+        public async Task<(int, List<TestPageResponse>)> GetTestsPageAsync(TestFilter filter, CancellationToken ct = default)
         {
             int totalTests;
             List<TestPageResponse> PageItem;
             IQueryable<Test> tests = context.Tests;
            
-            if(filter is null)
-            {
-                totalTests = await context.Tests.CountAsync(ct);
-
-                PageItem = await tests
-                .OrderByDescending(t => t.CreatedAtUtc)
-                .Take(10)
-                .Select(t => new TestPageResponse
-                          { 
-                            Id = t.Id,
-                            Status = t.Status,
-                            TeacherId = t.TeacherId,
-                            CourseId = t.CourseId,
-                            CourseName = t.Course.Name,
-                            TeacherName = t.Teacher.Name,
-                            Date = t.Date,
-                            Kind = t.Kind,
-                          })
-                .ToListAsync(ct);
-
-                return (totalTests, PageItem);
-            }
+            
 
             filter.Page = Math.Max(1, filter.Page);
             filter.PageSize = Math.Clamp(filter.PageSize, 1, 100);
@@ -97,7 +76,6 @@ namespace Ces_Platform_Server_Side.Repositories
 
         private static IQueryable<Test> ApplyFilters(IQueryable<Test> query,TestFilter filter)
         {
-            var thisYear = DateTimeOffset.UtcNow.Year;
 
             if(filter.TestKind != TestKind.None)
                 query = query.Where(t => t.Kind == filter.TestKind);
@@ -105,11 +83,9 @@ namespace Ces_Platform_Server_Side.Repositories
             if(filter.Status != TestStatus.None)
                 query = query.Where(t => t.Status == filter.Status);
 
-            if(filter.Year != thisYear)
+            if(filter.Year != 0)
                 query = query.Where(t => t.Date.Year == filter.Year);
-            else
-                query = query.Where(t => t.Date.Year == thisYear);
-
+            
             return query;
         }
 

@@ -10,7 +10,7 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<TestResponse> CreatePendingTest(CreateTestRequest request, CancellationToken ct = default);
         public Task UpdateTest(Guid TestId, UpdateTestRequest request, CancellationToken ct = default);
         public Task UpdateTestStatus(Guid TestId, UpdateTestStatusRequest request, CancellationToken ct = default);
-        public Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter? filter, CancellationToken ct = default);
+        public Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter filter, CancellationToken ct = default);
         public Task<TestResponse> GetTestById(Guid TestId, CancellationToken ct);
         public Task DeleteTest(Guid TestId, CancellationToken ct = default);
     }
