@@ -75,11 +75,9 @@ namespace Ces_Platform_Server_Side.Services
             logger.LogInformation($"deleted test {TestId} by {username} at {DateTime.UtcNow}", userRole);
         }
 
-        public async Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter? filter, CancellationToken ct = default)
+        public async Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter filter, CancellationToken ct = default)
         {
             (int totalTests, List<TestPageResponse> tests) = await repository.GetTestsPageAsync(filter, ct);
-
-            filter ??= new();
 
             if (tests is null || !tests.Any())
             {

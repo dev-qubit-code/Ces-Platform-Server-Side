@@ -11,6 +11,6 @@ namespace Ces_Platform_Server_Side.FIlters.QueryFilters
         public string SortDirection { get; set; } = "desc";
         public TestStatus Status { set; get; } = TestStatus.None;
         public TestKind TestKind { set; get; } = TestKind.None;
-        public int Year { set; get; } = DateTimeOffset.UtcNow.Year;
+        public int Year { set; get; }
     }
 }
