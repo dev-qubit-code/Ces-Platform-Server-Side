@@ -90,13 +90,11 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
         logger.LogInformation($"updated studentInfo {studentInfo.Id} by {userName} at {studentInfo.LastModifiedAtUtc}",userRole);
     } 
 
-    public async Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter? filter, CancellationToken ct = default)
+    public async Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter filter, CancellationToken ct = default)
     {
          
         
         (int totalCount,var studentInfos) = await repository.GetStudentInfosPageAsync(filter, ct);
-
-        filter ??= new();
 
         if(studentInfos is null || !studentInfos.Any()) 
             return PagedResult<StudentInfoPageResponse>.Create(
@@ -106,7 +104,7 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
             filter.PageSize);
 
         var pagedResult = PagedResult<StudentInfoPageResponse>.Create(
-            StudentInfoPageResponse.FromModels(studentInfos),
+            studentInfos,
             totalCount,
             filter.Page,
             filter.PageSize);
