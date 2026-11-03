@@ -1,6 +1,7 @@
 ﻿using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ces_Platform_Server_Side.Repositories
@@ -31,39 +32,38 @@ namespace Ces_Platform_Server_Side.Repositories
         public async Task<int> GetNotesCountAsync(CancellationToken ct = default)
         => await context.Notes.CountAsync(ct);
 
-        public async Task<(int, List<Note>)> GetNotesPageAsync(NoteFilter? filter, CancellationToken ct = default)
+        public async Task<(int, List<NotePageResponse>)> GetNotesPageAsync(NoteFilter filter, CancellationToken ct = default)
         {
 
             IQueryable<Note> notes = context.Notes;
 
             int CountOfAllItems;
-            List<Note> PageItem;
-
-            if (filter is null)
-            {
-                PageItem = await context.Notes.Include(n => n.Teacher).Include(c => c.Course).Take(10).ToListAsync(ct);
-                CountOfAllItems = await context.Notes.CountAsync(ct);
-
-                return (CountOfAllItems, PageItem);
-            }
+            List<NotePageResponse> PageItem;
 
             filter.Page = Math.Max(1, filter.Page);
             filter.PageSize = Math.Clamp(filter.PageSize, 1, 100);
 
-            ApplyFilters(notes, filter);
+            notes = ApplyFilters(notes, filter);
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                ApplySearchTerm(notes, filter.Search);
+                notes = ApplySearchTerm(notes, filter.Search);
             }
 
-            ApplySorting(notes, filter.SortColumn, filter.SortDirection);
+            notes = ApplySorting(notes, filter.SortColumn, filter.SortDirection);
 
-            CountOfAllItems = await context.Notes.CountAsync(ct);
+            CountOfAllItems = await notes.CountAsync(ct);
 
-            PageItem = await notes.Include(n => n.Teacher).Include(c => c.Course).Skip((filter.Page - 1) * filter.PageSize)
+            PageItem = await notes.Skip((filter.Page - 1) * filter.PageSize)
                           .Take(filter.PageSize)
-                          .ToListAsync(ct);
+                          .Select(n => new NotePageResponse
+                          {
+                              Id = n.Id,
+                              Name = n.Name,
+                              Date = n.Date,
+                              CourseName = n.Course.Name,
+                              TeacherName = n.Teacher.Name,
+                          }).ToListAsync(ct);
 
             return (CountOfAllItems, PageItem);
 
@@ -75,12 +75,16 @@ namespace Ces_Platform_Server_Side.Repositories
         {
             var courseNameNormalized = filter.CourseName.Trim().ToLower();
             var teacherNameNormalized = filter.TeacherName.Trim().ToLower();
+            var thisYear = DateTimeOffset.UtcNow.Year;
 
             if(!string.IsNullOrWhiteSpace(courseNameNormalized))
                 query = query.Where(n => n.Course.Name.ToLower() == courseNameNormalized);
 
-            if(!string.IsNullOrWhiteSpace(filter.TeacherName))
-                query = query.Where(n => n.Teacher.Name.ToLower() == filter.TeacherName);
+            if(!string.IsNullOrWhiteSpace(teacherNameNormalized))
+                query = query.Where(n => n.Teacher.Name.ToLower() == teacherNameNormalized);
+
+            if(filter.Year != 0)
+                query = query.Where(n => n.Date.Year == filter.Year);
 
             return query;
         }
@@ -89,7 +93,8 @@ namespace Ces_Platform_Server_Side.Repositories
         {      
             var normalized = searchTerm.Trim().ToLower();
 
-            query = query.Where(n => n.Name.ToLower().Contains(normalized));
+            if(!string.IsNullOrWhiteSpace(normalized))
+                query = query.Where(n => n.Name.ToLower().Contains(normalized));
 
             return query;
         }

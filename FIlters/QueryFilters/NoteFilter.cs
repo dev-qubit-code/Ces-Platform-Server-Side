@@ -9,6 +9,6 @@
         public string SortDirection { get; set; } = "desc";
         public string TeacherName { get; set; } = string.Empty;
         public string CourseName { get; set; } = string.Empty;
-        public int Year { set; get; } = DateTimeOffset.UtcNow.Year;
+        public int Year { set; get; }
     }
 }
