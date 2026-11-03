@@ -65,7 +65,7 @@ public class StudentInfoController(IStudentInfoService studentInfoService) : Con
     [EndpointName("GetStudentInfoPage")]
     [EndpointSummary("Get a page of studentInfos")]
     [EndpointDescription("Get the page studentInfos")]
-    public async Task<ActionResult<PagedResult<StudentInfoResponse>>> GetStudentInfoPage([FromQuery]StudentInfoFilter? filter,CancellationToken ct = default) 
+    public async Task<ActionResult<PagedResult<StudentInfoResponse>>> GetStudentInfoPage([FromQuery]StudentInfoFilter filter,CancellationToken ct = default) 
     {
         var studentInfosPageResponse = await studentInfoService.GetPagedStudentInfos(filter,ct);
 

@@ -6,36 +6,46 @@ using Ces_Platform_Server_Side.FIlters.QueryFilters;
 
 public class StudentInfoRepository(AppDbContext context) : IStudentInfoRepository
 {
-    public async Task<(int,List<StudentInfo>)> GetStudentInfosPageAsync(StudentInfoFilter? filter, CancellationToken ct = default)
+    public async Task<(int,List<StudentInfoPageResponse>)> GetStudentInfosPageAsync(StudentInfoFilter filter, CancellationToken ct = default)
     {
         IQueryable<StudentInfo> studentInfos = context.StudentInfos
+        .OrderByDescending(si => si.CreatedAtUtc)
         .Include(si => si.Sources)
         .Include(si => si.Skills)
+        .AsNoTracking()
         .AsSplitQuery();
-
-        List<StudentInfo> page;
-        int totalCount;
-
-        if(filter is null)
-        {
-            page = await studentInfos.Take(10).ToListAsync(ct);
-
-            totalCount = await studentInfos.CountAsync();
-            return (totalCount,page);
-        }
 
         filter.PageSize = Math.Max(1, filter.PageSize);
         filter.Page = Math.Clamp(filter.Page, 1, 100);
 
-        ApplyFilters(studentInfos, filter);
+        studentInfos = ApplyFilters(studentInfos, filter);
 
         if(!string.IsNullOrWhiteSpace(filter.Search))
-            ApplySearchTerm(studentInfos, filter.Search);
+            studentInfos = ApplySearchTerm(studentInfos, filter.Search);
 
-        totalCount = await studentInfos.CountAsync(ct);
+        var totalCount = await studentInfos.CountAsync(ct);
 
-        page = await studentInfos.Skip((filter.Page - 1) * filter.PageSize)
+        var page = await studentInfos.Skip((filter.Page - 1) * filter.PageSize)
                           .Take(filter.PageSize)
+                          .Select(si => new StudentInfoPageResponse
+                          {
+                              Id = si.Id,
+                              About = si.About,
+                              Major = si.Major,
+                              Name = si.Name,
+                              CreatedAtUtc = si.CreatedAtUtc,
+                              Skills = si.Skills.Select(s => new SkillResponse
+                              {
+                                  Id = s.Id,
+                                  Name = s.Name,
+                              }).ToList(),
+                              Sources = si.Sources.Select(s => new SourceResponse
+                              {
+                                  Id = s.Id,
+                                  Name = s.Name,
+                                  Url = s.Url,
+                              }).ToList()
+                          })
                           .ToListAsync(ct);
         
         return (totalCount,page);
