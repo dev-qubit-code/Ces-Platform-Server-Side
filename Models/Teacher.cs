@@ -8,15 +8,12 @@ public class Teacher:AuditableEntity
     // navigation 
     public List<Test> Tests = [];
     public List<Note> Notes = [];
-    public Teacher(string name)
+    public Teacher(string name,string createdBy) : base(createdBy)
     {
         Name = name;
     }
 
-     public static Teacher Create(CreateTeacherRequest request, string createdBy) => new Teacher(createdBy)
-    {
-            Name = request.Name
-    };
+     public static Teacher Create(CreateTeacherRequest request, string createdBy) => new Teacher(request.Name,createdBy);
 
     public void Assign(UpdateTeacherRequest request, string lastModifiedBy)
     {

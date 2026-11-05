@@ -4,36 +4,61 @@ using Ces_Platform_Server_Side.Exceptions;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
+using System.Security.Claims;
+using Ces_Platform_Server_Side.Enums;
 
 namespace Ces_Platform_Server_Side.Services;
 
-public class ArticleService(IArticleRepository repository) : IArticleService 
+public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher> logger,IHttpContextAccessor accessor) : IArticleService 
 {
     public async Task<ArticleResponse> CreateArticle(CreateArticleRequest request, CancellationToken ct = default)
     {
-        
-        var article =  Article.Create(request,"testName");
+        var principal = accessor.HttpContext!.User;
 
-        if(!await repository.AddArticleAsync(article,ct))
+        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
+        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
+
+        var article =  Article.Create(request,username!);
+
+        if(!await repository.AddArticleAsync(article, ct))
+        {
+            
             throw new InvalidOperationException("Error occured while adding the article");
+        }
+
+        logger.LogInformation($"Create new article {article.Id} by {username} at {article.CreatedAtUtc}",userRole);
 
         return ArticleResponse.FromModel(article);
     } 
     
     public async Task UpdateArticle(Guid articleId,UpdateArticleRequest request, CancellationToken ct = default)
     {   
+        var principal = accessor.HttpContext!.User;
+
+        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
+        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
+
         var article = await repository.GetArticleByIdAsync(articleId);
 
         if(article is null)
+        {
+            
             throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
+        }
 
         if(article.IsEqual(request))
             return;
             
-        article.Assign(request,"testName");
+        article.Assign(request,username!);
  
         if(!await repository.UpdateArticleAsync(ct))
+        {
+
             throw new InvalidOperationException("Error occured while updating the article");
+        }
+
+        logger.LogInformation($"updated article {article.Id} by {username} at {article.LastModifiedAtUtc}",userRole);
+
     } 
 
     public async Task<PagedResult<ArticlePageResponse>> GetPagedArticles(ArticleFilter? filter, CancellationToken ct = default)
@@ -61,17 +86,40 @@ public class ArticleService(IArticleRepository repository) : IArticleService
     }
     public async Task<ArticleResponse> GetArticleById(Guid articleId,CancellationToken ct)
     {
-        var article = await repository.GetArticleByIdAsync(articleId,ct) ?? throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound); 
+
+        var article = await repository.GetArticleByIdAsync(articleId);
+
+        if(article is null)
+        {
+            
+            throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
+        }
 
         return ArticleResponse.FromModel(article);
     } 
 
     public async Task DeleteArticle(Guid articleId, CancellationToken ct = default)
     {
-        var article = await repository.GetArticleByIdAsync(articleId,ct) ?? throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound); 
+        var principal = accessor.HttpContext!.User;
 
-        if(!await repository.DeleteArticleAsync(article, ct)) 
+        var username = principal!.FindFirstValue(ClaimTypes.GivenName);
+        var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
+
+        var article = await repository.GetArticleByIdAsync(articleId);
+
+        if(article is null)
+        {
+            
+            throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
+        } 
+
+        if(!await repository.DeleteArticleAsync(article, ct))
+        {
+            
             throw new InvalidOperationException("Error occurd while deleting the article");
+        } 
+
+        logger.LogInformation($"deleted article {article.Id} by {username} at {DateTime.Now}",userRole);
     }
 
 }

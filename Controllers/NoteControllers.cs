@@ -76,15 +76,13 @@ namespace Ces_Platform_Server_Side.Controllers
 
         [HttpGet]
         [Consumes("application/json")]
-        [ProducesResponseType<TeacherResponse>(StatusCodes.Status201Created)]
+        [ProducesResponseType<NotePageResponse>(StatusCodes.Status200OK)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("GetNotesPage")]
         [EndpointSummary("Get Page Of Notes Using Filter")]
-        
-
-        public async Task<ActionResult> GetNotesPage([FromQuery] NoteFilter? filter, CancellationToken ct = default)
+        public async Task<ActionResult<NotePageResponse>> GetNotesPage([FromQuery]NoteFilter filter, CancellationToken ct = default)
         {
             PagedResult<NotePageResponse> Result = await service.GetPagedNotes(filter, ct);
             return Ok(Result);

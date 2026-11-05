@@ -11,10 +11,10 @@ namespace Ces_Platform_Server_Side.Controllers;
 [Route("api/v{version:apiVersion}/articles")]
 [ApiVersion("1.0")]
 [Tags("Articles")]
-[Authorize("Admin")]
 public class ArticleController(IArticleService articleService) : ControllerBase
 {
     [HttpPost]
+    [Authorize("Admin")]
     [Consumes("application/json")]
     [ProducesResponseType<ArticleResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -31,6 +31,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     } 
 
     [HttpPut("{articleId:guid}")]
+    [Authorize("Admin")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -79,6 +80,7 @@ public class ArticleController(IArticleService articleService) : ControllerBase
     }
 
     [HttpDelete("{articleId}")]
+    [Authorize("Admin")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]

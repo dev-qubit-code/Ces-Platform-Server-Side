@@ -2,6 +2,7 @@
 using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using Ces_Platform_Server_Side.Interfaces;
 using Ces_Platform_Server_Side.Models;
+using Ces_Platform_Server_Side.Responses;
 using Microsoft.EntityFrameworkCore;
  
 namespace Ces_Platform_Server_Side.Repositories
@@ -14,16 +15,10 @@ namespace Ces_Platform_Server_Side.Repositories
             return await context.SaveChangesAsync(ct) > 0;
         }
 
-        public async Task<bool> DeleteTestAsync(Guid TestId, CancellationToken ct = default)
+        public async Task<bool> DeleteTestAsync(Test test, CancellationToken ct = default)
         {
-            Test? test = await context.Tests.FindAsync(TestId);
-
-            if (test is null)
-                return false;
-
             context.Tests.Remove(test);
             return await context.SaveChangesAsync(ct) > 0;
-
         }
 
         public async Task<Test?> GetTestByIdAsync(Guid TestId, CancellationToken ct = default)
@@ -37,42 +32,39 @@ namespace Ces_Platform_Server_Side.Repositories
         public async Task<int> GetTestsCountAsync(CancellationToken ct = default)
             => await context.Tests.CountAsync(ct);
 
-        public async Task<(int, List<Test>)> GetTestsPageAsync(TestFilter? filter, CancellationToken ct = default)
+        public async Task<(int, List<TestPageResponse>)> GetTestsPageAsync(TestFilter filter, CancellationToken ct = default)
         {
             int totalTests;
-            List<Test> PageItem;
+            List<TestPageResponse> PageItem;
             IQueryable<Test> tests = context.Tests;
            
-            if(filter is null)
-            {
-                totalTests = await context.Tests.CountAsync(ct);
-
-                PageItem = await context.Tests
-                    .Include(i => i.Teacher)
-                    .Include(i => i.Course)
-                    .Take(10)
-                    .ToListAsync(ct);
-                return (totalTests, PageItem);
-            }
+            
 
             filter.Page = Math.Max(1, filter.Page);
             filter.PageSize = Math.Clamp(filter.PageSize, 1, 100);
 
+            tests = ApplyFilters(tests, filter);
+
             if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                tests = tests.Where(n => n.Teacher.Name.Contains(filter.Search))
-                    .Where(n => n.Course.Name.Contains(filter.Search));
+                tests = ApplySearchTerm(tests, filter.Search);
 
-                totalTests = await context.Tests.CountAsync(ct);
-            }
-
-            if(filter.Status != TestStatus.None)
-                tests = tests.Where(t => t.Status == filter.Status);
+            tests = ApplySorting(tests, filter.SortColumn, filter.SortDirection);
                 
-            totalTests = await context.Tests.CountAsync(ct);
+            totalTests = await tests.CountAsync(ct);
 
-            PageItem = await tests.Include(t => t.Teacher).Include(c => c.Course).Skip((filter.Page - 1) * filter.PageSize)
+            PageItem = await tests.Skip((filter.Page - 1) * filter.PageSize)
                           .Take(filter.PageSize)
+                          .Select(t => new TestPageResponse
+                          { 
+                            Id = t.Id,
+                            Status = t.Status,
+                            TeacherId = t.TeacherId,
+                            CourseId = t.CourseId,
+                            CourseName = t.Course.Name,
+                            TeacherName = t.Teacher.Name,
+                            Date = t.Date,
+                            Kind = t.Kind,
+                          })
                           .ToListAsync(ct);
          
             return (totalTests, PageItem);
@@ -81,5 +73,44 @@ namespace Ces_Platform_Server_Side.Repositories
 
         public async Task<bool> UpdateTestAsync(CancellationToken ct = default)
             => await context.SaveChangesAsync(ct) > 0 ;
+
+        private static IQueryable<Test> ApplyFilters(IQueryable<Test> query,TestFilter filter)
+        {
+
+            if(filter.TestKind != TestKind.None)
+                query = query.Where(t => t.Kind == filter.TestKind);
+
+            if(filter.Status != TestStatus.None)
+                query = query.Where(t => t.Status == filter.Status);
+
+            if(filter.Year != 0)
+                query = query.Where(t => t.Date.Year == filter.Year);
+            
+            return query;
+        }
+
+        private static IQueryable<Test> ApplySearchTerm(IQueryable<Test> query, string searchTerm)
+        {      
+            var normalized = searchTerm.Trim().ToLower();
+
+            query = query.Where(t => t.Course.Name.ToLower().Contains(normalized));
+
+            return query;
+        }
+
+        private static IQueryable<Test> ApplySorting(IQueryable<Test> query, string sortColumn, string sortDirection)
+        {
+            var isDescending = sortDirection.Equals("desc", StringComparison.CurrentCultureIgnoreCase);
+
+            query = sortColumn.ToLower() switch
+            {
+                "createdatutc" => isDescending ? query.OrderByDescending(t => t.CreatedAtUtc) : query.OrderBy(t => t.CreatedAtUtc),
+                "teachername" => isDescending ? query.OrderByDescending(t => t.Teacher.Name) : query.OrderBy(t => t.Teacher.Name),
+                "coursename" => isDescending ? query.OrderByDescending(t => t.Course.Name) : query.OrderBy(t => t.Course.Name),
+                _ => query.OrderByDescending(t => t.CreatedAtUtc)
+            };
+
+            return query;
+        }
     }
 }

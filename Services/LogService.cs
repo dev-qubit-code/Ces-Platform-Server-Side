@@ -32,4 +32,11 @@ public class LogService(ILogRepository repository) : ILogService
 
         return pagedResult;
     }
+
+    public async Task<List<DashboardLogResponse>> GetLastFiveLogs(ClaimsPrincipal user)
+    {
+        var userRole = Enum.Parse<UserRole>(user!.FindFirstValue(ClaimTypes.Role)!);
+
+        return DashboardLogResponse.FromModels(repository.GetLastFiveLogs(userRole)).ToList();
+    }
 }

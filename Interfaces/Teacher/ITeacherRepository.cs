@@ -8,6 +8,6 @@ public interface ITeacherRepository
     public Task<Teacher?> GetTeacherByIdAsync(Guid teacherId, CancellationToken ct = default);
     public  Task<bool> AddTeacherAsync(Teacher teacher, CancellationToken ct = default);
     public Task<bool> UpdateTeacherAsync(CancellationToken ct = default);
-    public Task<bool> DeleteTeacherAsync(Guid teacherId, CancellationToken ct = default);
+    public Task<bool> DeleteTeacherAsync(Teacher teacher, CancellationToken ct = default);
     public Task<int> GetTeachersCountAsync(CancellationToken ct = default);
 }

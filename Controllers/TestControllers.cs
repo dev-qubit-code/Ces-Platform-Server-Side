@@ -94,7 +94,7 @@ namespace Ces_Platform_Server_Side.Controllers
         [EndpointName("GetTestPage")]
         [EndpointSummary("Get a page of tests")]
         [EndpointDescription("Get the page tests")]
-        public async Task<ActionResult<PagedResult<TestResponse>>> GettestPage([FromQuery] TestFilter? filter, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<TestResponse>>> GettestPage([FromQuery] TestFilter filter, CancellationToken ct = default)
         {
             var testsPageResponse = await service.GetPagedTests(filter, ct);
 
@@ -119,6 +119,7 @@ namespace Ces_Platform_Server_Side.Controllers
         }
 
         [HttpPut("{testId:guid}/status")]
+        [Authorize(Policy = "Manager/Admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
