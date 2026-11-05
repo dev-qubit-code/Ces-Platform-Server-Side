@@ -24,6 +24,13 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
                 throw new InvalidOperationException("Error occured while adding the new user");
             }        
+
+        var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+        if(users != null)
+        {
+            users.Add(newUser.Id,newUser.IsActive);
+        }
             
         logger.LogInformation($"Create new user {newUser.Id} by {username} at {newUser.CreatedAtUtc}",userRole);
 
@@ -124,6 +131,14 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
             throw new InvalidOperationException("Error occurd while deleting the user");
         }
+
+        var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+        if(users != null)
+        {
+            users.Remove(user.Id);
+        }
+        
 
         logger.LogInformation($"deleted user {user.Id} by {username} at {user.CreatedAtUtc}",userRole);
     }

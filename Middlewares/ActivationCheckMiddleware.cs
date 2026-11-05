@@ -24,7 +24,7 @@ public class ActivationCheckMiddleware(RequestDelegate next, IMemoryCache cache)
                 
                 // check user is deactivated in the cache
                 if(users?[userId] != null && !users[userId])
-                    return;
+                    throw new BusinessRuleException("The user is deactivated",StatusCodes.Status403Forbidden);
                 
                 await _next(httpContext);
             }  

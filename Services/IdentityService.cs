@@ -23,7 +23,7 @@ public class IdentityService(IConfiguration configuration,IUserRepository UserRe
             throw new BusinessRuleException("Invalid Email or Password",StatusCodes.Status409Conflict);
 
         if(!user.IsActive)
-            throw new BusinessRuleException("The user is deactivated",StatusCodes.Status409Conflict);
+            throw new BusinessRuleException("The user is deactivated",StatusCodes.Status403Forbidden);
 
 
         return new (){ Token = GenerateJwtToken(user) , Role = user.Role};
