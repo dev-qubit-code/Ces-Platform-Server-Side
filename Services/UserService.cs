@@ -5,8 +5,9 @@ using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using System.Security.Claims;
 using Ces_Platform_Server_Side.Enums;
+using Microsoft.Extensions.Caching.Memory;
 
-public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor) : IUserService 
+public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor,IMemoryCache cache) : IUserService 
 {
     public async Task<UserResponse> CreateUser(CreateUserRequest request, CancellationToken ct = default)
     {
@@ -149,13 +150,14 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         user.IsActive = request.IsActive;
         user.LastModifiedBy = username!;
         user.LastModifiedAtUtc = DateTimeOffset.UtcNow;
-        
-        if(!await repository.UpdateUserAsync(ct))
-        {
-            logger.LogError($"Error occured while updating the user activation {user.Id} at {DateTime.Now} by {username}",userRole);
-            
+
+        if (!await repository.UpdateUserAsync(ct))
             throw new InvalidOperationException("Error occured while updating the user activation");
-        }
+
+            var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+            if(users?[user.Id] != null)
+                users[user.Id] = user.IsActive;
 
         logger.LogInformation($"updated user {user.Id} activation by {username} at {user.LastModifiedAtUtc}",userRole);
     }
