@@ -8,4 +8,6 @@ public class DashboardResponse
    public int NotesCount { get; set; }
    public int StudentInfoCount { get; set; }
    public List<DashboardLogResponse> DashboardLogs  { get; set; } = [];
+   public List<DashboardTestResponse> DashboardTests  { get; set; } = [];
+
 }

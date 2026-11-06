@@ -34,7 +34,12 @@ public class DashboardController : ControllerBase
             PendingTestsCount = await context.Tests.Where(t => t.Status == TestStatus.Pending).CountAsync(),
             NotesCount = await context.Notes.CountAsync(),
             StudentInfoCount = await context.StudentInfos.CountAsync(),
-            DashboardLogs = await logService.GetLastFiveLogs(User)
+            DashboardLogs = await logService.GetLastFiveLogs(User),
+            DashboardTests = await context.Tests
+            .Where(t => t.CreatedAtUtc >= DateTimeOffset.UtcNow.AddYears(-1))
+            .GroupBy(t => t.CreatedAtUtc.Month)
+            .Select(tg => new DashboardTestResponse{ Month = tg.Key, TestsCount = tg.Count()})
+            .ToListAsync()
         };
     }
 }
