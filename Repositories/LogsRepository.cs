@@ -2,6 +2,7 @@ using Ces_Platform_Server_Side.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Enums;
+using Ces_Platform_Server_Side.Responses;
 
 public class LogRepository(AppDbContext context) : ILogRepository
 {
@@ -10,18 +11,21 @@ public class LogRepository(AppDbContext context) : ILogRepository
         context.Logs.Add(log);
         return context.SaveChanges() > 0;
     }
-     public async Task<(int,List<Log>)> GetLogsPageAsync(LogFilter? filter,UserRole role, CancellationToken ct = default)
+     public async Task<(int,List<LogPageResponse>)> GetLogsPageAsync(LogFilter? filter,UserRole role, CancellationToken ct = default)
     {
         IQueryable<Log> logs = context.Logs;
 
-        List<Log> page;
+        List<LogPageResponse> page;
         int totalCount;
 
         if(filter is null)
         {
-            page = await logs.Take(10).ToListAsync(ct);
+            page = await logs
+            .Select(l => new LogPageResponse{ Message = l.Message, CreatedAtUtc = l.CreatedAtUtc })
+            .Take(10).ToListAsync(ct);
 
-            totalCount = await logs.CountAsync();
+            totalCount = await logs
+            .CountAsync();
             return (totalCount,page);
         }
 
@@ -37,9 +41,11 @@ public class LogRepository(AppDbContext context) : ILogRepository
 
         totalCount = await logs.CountAsync(ct);
 
-        page = await logs.Skip((filter.Page - 1) * filter.PageSize)
-                          .Take(filter.PageSize)
-                          .ToListAsync(ct);
+        page = await logs.OrderByDescending(t => t.CreatedAtUtc)
+                        .Skip((filter.Page - 1) * filter.PageSize)
+                        .Take(filter.PageSize)
+                        .Select(l => new LogPageResponse{ Message = l.Message, CreatedAtUtc = l.CreatedAtUtc })
+                        .ToListAsync(ct);
         
         return (totalCount,page);
     }
