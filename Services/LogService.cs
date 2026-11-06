@@ -25,7 +25,7 @@ public class LogService(ILogRepository repository) : ILogService
             filter.PageSize);
 
         var pagedResult = PagedResult<LogPageResponse>.Create(
-            LogPageResponse.FromModels(logs),
+            logs,
             totalCount,
             filter.Page,
             filter.PageSize);
