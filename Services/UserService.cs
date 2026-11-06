@@ -5,8 +5,9 @@ using Ces_Platform_Server_Side.Models;
 using Ces_Platform_Server_Side.Requests;
 using System.Security.Claims;
 using Ces_Platform_Server_Side.Enums;
+using Microsoft.Extensions.Caching.Memory;
 
-public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor) : IUserService 
+public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor,IMemoryCache cache) : IUserService 
 {
     public async Task<UserResponse> CreateUser(CreateUserRequest request, CancellationToken ct = default)
     {
@@ -22,6 +23,13 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
                 throw new InvalidOperationException("Error occured while adding the new user");
             }        
+
+        var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+        if(users != null)
+        {
+            users.Add(newUser.Id,newUser.IsActive);
+        }
             
         logger.LogInformation($"Create new user {newUser.Id} by {username} at {newUser.CreatedAtUtc}",userRole);
 
@@ -114,6 +122,14 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
             throw new InvalidOperationException("Error occurd while deleting the user");
         }
 
+        var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+        if(users != null)
+        {
+            users.Remove(user.Id);
+        }
+        
+
         logger.LogInformation($"deleted user {user.Id} by {username} at {user.CreatedAtUtc}",userRole);
     }
 
@@ -139,11 +155,13 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         user.LastModifiedBy = username!;
         user.LastModifiedAtUtc = DateTimeOffset.UtcNow;
         
-        if(!await repository.UpdateUserAsync(ct))
-        {
-            
+        if(!await repository.UpdateUserAsync(ct))   
             throw new InvalidOperationException("Error occured while updating the user activation");
-        }
+
+            var users = cache.Get<Dictionary<Guid,bool>>($"users-activations");
+
+            if(users?[user.Id] != null)
+                users[user.Id] = user.IsActive;
 
         logger.LogInformation($"updated user {user.Id} activation by {username} at {user.LastModifiedAtUtc}",userRole);
     }
