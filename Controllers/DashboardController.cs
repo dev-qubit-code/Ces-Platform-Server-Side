@@ -26,6 +26,9 @@ public class DashboardController : ControllerBase
     [EndpointDescription("Get dashboard status")]
     public async Task<DashboardResponse> GetDashboardStatus(AppDbContext context, ILogService logService) 
     {    
+        var now = DateTimeOffset.UtcNow;
+        var lastYear = new DateTime(now.Year,now.Month,1).AddMonths(-11);
+
         return new()
         {
             UsersCount = await context.Users.CountAsync(),
@@ -36,7 +39,7 @@ public class DashboardController : ControllerBase
             StudentInfoCount = await context.StudentInfos.CountAsync(),
             DashboardLogs = await logService.GetLastFiveLogs(User),
             DashboardTests = await context.Tests
-            .Where(t => t.CreatedAtUtc >= DateTimeOffset.UtcNow.AddYears(-1))
+            .Where(t => t.CreatedAtUtc >= lastYear)
             .GroupBy(t => t.CreatedAtUtc.Month)
             .Select(tg => new DashboardTestResponse{ Month = tg.Key, TestsCount = tg.Count()})
             .ToListAsync()
