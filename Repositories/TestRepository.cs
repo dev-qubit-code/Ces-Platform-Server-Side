@@ -74,6 +74,8 @@ namespace Ces_Platform_Server_Side.Repositories
         public async Task<bool> UpdateTestAsync(CancellationToken ct = default)
             => await context.SaveChangesAsync(ct) > 0 ;
 
+        public async Task<List<int>> GetExistingYears(CancellationToken ct = default) => await context.Tests.Select(t => t.Date.Year).Distinct().ToListAsync(ct);
+
         private static IQueryable<Test> ApplyFilters(IQueryable<Test> query,TestFilter filter)
         {
 
