@@ -8,7 +8,7 @@ namespace Ces_Platform_Server_Side.Interfaces
     {
         public Task<NoteResponse> CreateNote(CreateNoteRequest request, CancellationToken ct = default);
         public Task UpdateNote(Guid NoteId, UpdateNoteRequest request, CancellationToken ct = default);
-        public Task<PagedResult<NotePageResponse>> GetPagedNotes(NoteFilter? filter, CancellationToken ct = default);
+        public Task<PagedResult<NotePageResponse>> GetPagedNotes(NoteFilter filter, CancellationToken ct = default);
         public Task<NoteResponse> GetNoteById(Guid NoteId, CancellationToken ct);
         public Task DeleteNote(Guid NoteId, CancellationToken ct = default);
     }

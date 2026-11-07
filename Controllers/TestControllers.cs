@@ -94,7 +94,7 @@ namespace Ces_Platform_Server_Side.Controllers
         [EndpointName("GetTestPage")]
         [EndpointSummary("Get a page of tests")]
         [EndpointDescription("Get the page tests")]
-        public async Task<ActionResult<PagedResult<TestResponse>>> GettestPage([FromQuery] TestFilter? filter, CancellationToken ct = default)
+        public async Task<ActionResult<PagedResult<TestPageResponse>>> GettestPage([FromQuery] TestFilter filter, CancellationToken ct = default)
         {
             var testsPageResponse = await service.GetPagedTests(filter, ct);
 
@@ -119,6 +119,7 @@ namespace Ces_Platform_Server_Side.Controllers
         }
 
         [HttpPut("{testId:guid}/status")]
+        [Authorize(Policy = "Manager/Admin")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
@@ -132,6 +133,20 @@ namespace Ces_Platform_Server_Side.Controllers
             await service.UpdateTestStatus(testId,request, ct);
 
             return NoContent();
+        }
+
+        [HttpGet("years")]
+        [Consumes("application/json")]
+        [ProducesResponseType<List<int>>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+        [EndpointName("GetExistingYears")]
+        [EndpointSummary("Get existing years of tests")]
+        [EndpointDescription("Get existing years tests")]
+        public async Task<ActionResult<List<int>>> GetExistingYears(CancellationToken ct = default)
+        {
+            var existingYears = await service.GetExistingYears(ct);
+
+            return Ok(existingYears);
         }
     }
 }

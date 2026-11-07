@@ -7,7 +7,8 @@ public interface IStudentInfoService
 {
     public  Task<StudentInfoResponse> CreateStudentInfo(CreateStudentInfoRequest request, CancellationToken ct = default);
     public  Task UpdateStudentInfo(Guid studentInfoId,UpdateStudentInfoRequest request, CancellationToken ct = default);
-    public  Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter? filter, CancellationToken ct = default);
+    public  Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter filter, CancellationToken ct = default);
     public  Task<StudentInfoResponse> GetStudentInfoById(Guid studentInfoId,CancellationToken ct);
     public  Task DeleteStudentInfo(Guid studentInfoId, CancellationToken ct = default);
+    public  Task<List<SkillResponse>> GetAllSkills();
 }

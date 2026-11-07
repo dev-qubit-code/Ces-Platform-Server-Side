@@ -34,7 +34,6 @@ public class User:AuditableEntity
         if(!string.IsNullOrWhiteSpace(request.Password))
             Password = request.Password;
         Role = request.Role;
-        IsActive = request.IsActive;
         LastModifiedAtUtc = DateTimeOffset.UtcNow;
         LastModifiedBy = lastModifiedBy;
     } 
@@ -45,8 +44,7 @@ public class User:AuditableEntity
             Name == request.Name &&
             Email == request.Email &&
             Password == request.Password &&
-            Role == request.Role &&
-            IsActive == request.IsActive
+            Role == request.Role
         )
             return true;
 

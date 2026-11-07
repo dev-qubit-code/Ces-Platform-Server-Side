@@ -84,6 +84,9 @@ namespace Ces_Platform_Server_Side.Data.Migrations
                 {
                     b.HasBaseType("Ces_Platform_Server_Side.Models.Entity");
 
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
