@@ -13,6 +13,7 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter filter, CancellationToken ct = default);
         public Task<TestResponse> GetTestById(Guid TestId, CancellationToken ct);
         public Task DeleteTest(Guid TestId, CancellationToken ct = default);
+        public Task<List<int>> GetExistingYears(CancellationToken ct = default);
     }
 }
 

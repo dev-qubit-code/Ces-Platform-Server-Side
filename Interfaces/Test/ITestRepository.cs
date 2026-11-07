@@ -12,5 +12,6 @@ namespace Ces_Platform_Server_Side.Interfaces
         public Task<bool> UpdateTestAsync(CancellationToken ct = default);
         public Task<bool> DeleteTestAsync(Test test, CancellationToken ct = default);
         public Task<int> GetTestsCountAsync(CancellationToken ct = default);
+        public Task<List<int>> GetExistingYears(CancellationToken ct = default);
     }
 }

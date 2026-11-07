@@ -34,17 +34,15 @@ namespace Ces_Platform_Server_Side.Services
 
         public async Task<TestResponse> CreatePendingTest(CreateTestRequest request, CancellationToken ct = default)
         {
-            var principal = accessor.HttpContext!.User;
+            var userName = "Anonymous";
+            var userRole = UserRole.Manager;
 
-            var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-            var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
-
-            Test test = Test.Create(request, username!);
+            Test test = Test.Create(request, userName!);
 
             if (await repository.AddTestAsync(test, ct))
             {
                 Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
-                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc} status: {test.Status}", userRole);
+                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {userName} at {test.CreatedAtUtc} status: {test.Status}", userRole);
 
                 return TestResponse.FromModel(Fulltest!);
             }
@@ -157,5 +155,7 @@ namespace Ces_Platform_Server_Side.Services
             logger.LogInformation($"updated test status {test.Id} activation by {username} at {test.LastModifiedAtUtc} status: {test.Status}", userRole);
 
         }
+
+        public async Task<List<int>> GetExistingYears(CancellationToken ct = default) => await repository.GetExistingYears(ct);
     }
 }
