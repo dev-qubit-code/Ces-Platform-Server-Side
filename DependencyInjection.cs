@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Ces_Platform_Server_Side.Enums;
 using Ces_Platform_Server_Side.Extensions;
+using Ces_Platform_Server_Side.Services.Hosted;
 
 namespace Ces_Platform_Server_Side;
 
@@ -32,6 +33,7 @@ public static class DependencyInjection
                 .AddCorsFunc()
                 .AddJwtAuthentication(configuration)
                 .AddAuthorizationPolicies()
+                .AddCaching()
                 .AddHttpContextAccessor()
                 .AddBusinessServices();
 
@@ -125,6 +127,13 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddCaching(this IServiceCollection services)
+    {
+        services.AddMemoryCache();
+
+        return services;
+    }
+
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
 
@@ -197,6 +206,8 @@ public static class DependencyInjection
         services.AddScoped<ILogRepository, LogRepository>();
         services.AddScoped<ILogService, LogService>();
         services.AddScoped(typeof(ILoggerWrapper<>), typeof(LoggerWrapper<>));
+
+        services.AddHostedService<CachingDeactivatedUsersHostedService>();
 
         return services;
     }

@@ -35,6 +35,8 @@ app.UseCors();
 
 app.UseAuthentication();
 
+app.UseMiddleware<ActivationCheckMiddleware>();
+
 app.UseAuthorization();
 
 app.MapControllers();

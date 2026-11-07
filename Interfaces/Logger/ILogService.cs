@@ -7,4 +7,5 @@ namespace Ces_Platform_Server_Side.Interfaces;
 public interface ILogService
 {
     public Task<PagedResult<LogPageResponse>> GetPagedLogs(LogFilter? filter, ClaimsPrincipal user, CancellationToken ct = default);
+    public Task<List<DashboardLogResponse>> GetLastFiveLogs(ClaimsPrincipal user);
 }

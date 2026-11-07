@@ -5,10 +5,12 @@ public class Log : Entity
 {
     public string Message { get; set; } = string.Empty;
     public UserRole Role { get; set; }
+    public DateTimeOffset CreatedAtUtc  { get; set; }
     public Log(string message, UserRole role)
     {
         Message = message;
         Role = role;
+        CreatedAtUtc = DateTimeOffset.UtcNow;
     }
 
     public static Log Create(string message, UserRole role) => new(message, role);
