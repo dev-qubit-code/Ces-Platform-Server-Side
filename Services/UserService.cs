@@ -30,8 +30,9 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         {
             users.Add(newUser.Id,newUser.IsActive);
         }
-            
-        logger.LogInformation($"Create new user {newUser.Id} by {username} at {newUser.CreatedAtUtc}",userRole);
+
+        logger.LogInformation($"تم انشاء مستخدم جديد باسم: {newUser.Name} بواسطة: {username} في تاريخ: {newUser.CreatedAtUtc}",userRole);
+
 
         return UserResponse.FromModel(newUser);
     } 
@@ -61,8 +62,8 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
 
             throw new InvalidOperationException("Error occured while updating the user");
         }
-        
-        logger.LogInformation($"updated user {user.Id} by {username} at {user.LastModifiedAtUtc}",userRole);
+
+        logger.LogInformation($"تم تعديل المستخدم: {user.Name} بواسطة: {user.LastModifiedBy} في تاريخ: {user.LastModifiedAtUtc}",userRole);
     } 
 
     public async Task<PagedResult<UserPageResponse>> GetPagedUsers(UserFilter? filter, CancellationToken ct = default)
@@ -130,7 +131,7 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         }
         
 
-        logger.LogInformation($"deleted user {user.Id} by {username} at {user.CreatedAtUtc}",userRole);
+        logger.LogInformation($"تم حذف المستخدم: {user.Name} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow}",userRole);
     }
 
     public async Task UpdateUserActivation(Guid userId, UpdateUserActivationRequest request, CancellationToken ct = default)
@@ -163,6 +164,6 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
             if(users?[user.Id] != null)
                 users[user.Id] = user.IsActive;
 
-        logger.LogInformation($"updated user {user.Id} activation by {username} at {user.LastModifiedAtUtc}",userRole);
+        logger.LogInformation($"تم {(user.IsActive?"تفعيل": "اطفاء" )} المستخدم: {user.Name}: بواسطة: {user.LastModifiedBy} في تاريخ: {user.LastModifiedAtUtc}",userRole);
     }
 }
