@@ -1,8 +1,10 @@
 using Ces_Platform_Server_Side.Data.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Ces_Platform_Server_Side.Models;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using System.Security.Policy;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IDataProtectionKeyContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<StudentInfo> StudentInfos { get; set; }
@@ -15,6 +17,9 @@ public class AppDbContext : DbContext
     public DbSet<Test> Tests { get; set; }
     public DbSet<Article> Articles { get; set; }
     public DbSet<Log> Logs { get; set; }
+
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
+
     public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions):base(dbContextOptions){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

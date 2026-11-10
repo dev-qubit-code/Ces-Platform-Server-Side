@@ -14,6 +14,7 @@ using System.Text;
 using Ces_Platform_Server_Side.Enums;
 using Ces_Platform_Server_Side.Extensions;
 using Ces_Platform_Server_Side.Services.Hosted;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace Ces_Platform_Server_Side;
 
@@ -35,6 +36,7 @@ public static class DependencyInjection
                 .AddAuthorizationPolicies()
                 .AddCaching()
                 .AddHttpContextAccessor()
+                .AddDataEncryption()
                 .AddBusinessServices();
 
         return services;
@@ -174,6 +176,14 @@ public static class DependencyInjection
         });
         return services;
     }
+
+    public static IServiceCollection AddDataEncryption(this IServiceCollection services)
+    {
+        services.AddDataProtection().PersistKeysToDbContext<AppDbContext>();
+
+        return services;
+    }
+
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
         

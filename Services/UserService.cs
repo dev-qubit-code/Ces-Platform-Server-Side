@@ -6,9 +6,12 @@ using Ces_Platform_Server_Side.Requests;
 using System.Security.Claims;
 using Ces_Platform_Server_Side.Enums;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.DataProtection;
 
-public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor,IMemoryCache cache) : IUserService 
+public class UserService(IUserRepository repository, ILoggerWrapper<User> logger, IHttpContextAccessor accessor,IMemoryCache cache, IDataProtectionProvider protectionProvider) : IUserService 
 {
+    private readonly IDataProtector protector = protectionProvider.CreateProtector("User.Protection");
+
     public async Task<UserResponse> CreateUser(CreateUserRequest request, CancellationToken ct = default)
     {
         var principal = accessor.HttpContext!.User;
@@ -17,6 +20,8 @@ public class UserService(IUserRepository repository, ILoggerWrapper<User> logger
         var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);        
 
         var newUser =  User.Create(request,username!);
+
+        newUser.Password = protector.Protect(newUser.Password);
 
             if(!await repository.AddUserAsync(newUser, ct))
             {
