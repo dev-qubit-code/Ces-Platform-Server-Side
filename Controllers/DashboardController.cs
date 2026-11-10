@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/v{version:apiVersion}/dashboard")]
 [ApiVersion("1.0")]
 [Tags("Dashboard")]
-[Authorize("Admin")]
+[Authorize("Manager/Admin")]
 public class DashboardController : ControllerBase
 {
     [HttpGet]
@@ -28,10 +28,9 @@ public class DashboardController : ControllerBase
     {    
         var now = DateTimeOffset.UtcNow;
         var lastYear = new DateTime(now.Year,now.Month,1).AddMonths(-11);
-
-        return new()
+        
+        var dashboardResponse = new DashboardResponse()
         {
-            UsersCount = await context.Users.CountAsync(),
             TeachersCount = await context.Teachers.CountAsync(),
             ApprovedTestsCount = await context.Tests.Where(t => t.Status == TestStatus.Approved).CountAsync(),
             PendingTestsCount = await context.Tests.Where(t => t.Status == TestStatus.Pending).CountAsync(),
@@ -44,5 +43,10 @@ public class DashboardController : ControllerBase
             .Select(tg => new DashboardTestResponse{ Month = tg.Key, TestsCount = tg.Count()})
             .ToListAsync()
         };
+
+        if(Enum.Parse<UserRole>(User.FindFirstValue(ClaimTypes.Role)!) == UserRole.Admin)
+            dashboardResponse.UsersCount = await context.Users.CountAsync();
+
+        return dashboardResponse;
     }
 }
