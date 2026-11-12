@@ -7,16 +7,16 @@ using Ces_Platform_Server_Side.FIlters.QueryFilters;
 using System.Security.Claims;
 using Ces_Platform_Server_Side.Enums;
 
-public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> logger,IHttpContextAccessor accessor) : IReportService 
+public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> logger) : IReportService 
 {
     public async Task<ReportResponse> CreateReport(CreateReportRequest request, CancellationToken ct = default)
     {
 
         // logging userRole is manager and userName is Anonymous as default if there is no authorization 
-        var userName = "Anonymous";
+        var username = "طالب";
         var userRole = UserRole.Manager;
 
-        var report =  Report.Create(request,userName);
+        var report =  Report.Create(request,username);
 
         if(!await repository.AddReportAsync(report,ct))
         {
@@ -24,7 +24,7 @@ public class ReportService(IReportRepository repository,ILoggerWrapper<Teacher> 
             throw new InvalidOperationException("Error occured while adding the report");
         }
 
-        logger.LogInformation($"Create new report {report.Id} by {userName} at {report.CreatedAtUtc}",userRole);
+        logger.LogInformation($"تم انشاء مقال بعنوان: {report.TItle} بواسطة: {username} في تاريخ: {report.CreatedAtUtc}",userRole);
         return ReportResponse.FromModel(report);
     } 
     

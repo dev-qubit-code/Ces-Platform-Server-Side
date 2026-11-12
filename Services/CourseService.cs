@@ -21,10 +21,10 @@ namespace Ces_Platform_Server_Side.Services
 
             Course course = Course.Create(request, username!);
             if (!await repo.AddCourseAsync(course, ct))
-            {
                 throw new InvalidOperationException("Error occured while adding the course");
-            }
-            logger.LogInformation($"Create new course {course.Id} by {username} at {course.CreatedAtUtc}",userRole);
+
+            logger.LogInformation($"تم انشاء مادة جديده باسم: {course!.Name} بواسطة: {username} في تاريخ: {course!.CreatedAtUtc}", userRole);
+
             return CourseResponse.FromModel(course);
             
         }
@@ -37,19 +37,15 @@ namespace Ces_Platform_Server_Side.Services
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
             var course = await repo.GetCourseByIdAsync(CourseId, ct);
+
             if (course is null)
-            {
-
                 throw new BusinessRuleException("cousrse not found", StatusCodes.Status404NotFound);
-            }
 
-            bool sucess = await repo.DeleteCourseAsync(course, ct);
 
-            if (!sucess)
-            {
+            if (!await repo.DeleteCourseAsync(course, ct))
                 throw new InvalidOperationException("Error occurd while deleting the course");
-            }
-                logger.LogInformation($"deleted course {CourseId} by {username} at {DateTime.UtcNow}", userRole);
+
+                logger.LogInformation($"تم حذف المادة باسم: {course!.Name} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow}", userRole);
         }
 
         public async Task<CourseResponse> GetCourseById(Guid CourseId, CancellationToken ct)
@@ -94,20 +90,17 @@ namespace Ces_Platform_Server_Side.Services
             Course? course = await repo.GetCourseByIdAsync(CourseId);
 
             if (course is null)
-            {
                 throw new BusinessRuleException("course not found", StatusCodes.Status404NotFound);
-            }
+
             if (course.IsEqual(request))
                 return;
 
             course.Assign(request, username!);
 
             if (!await repo.UpdateCourseAsync(ct))
-            {
                 throw new InvalidOperationException("Error occured while updating the course");
-            }
              
-            logger.LogInformation($"updated course {course.Id}  by {username} at {course.LastModifiedAtUtc}", userRole);
+            logger.LogInformation($"تم تعديل المادة باسم: {course!.Name} بواسطة: {username} في تاريخ: {course!.LastModifiedAtUtc}", userRole);
         }
     }
 }

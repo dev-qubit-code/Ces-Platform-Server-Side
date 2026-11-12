@@ -486,3 +486,4 @@ secrets.json
 HttpRequests/
 
 ApplicationTester.http
+Controllers/tsController.cs

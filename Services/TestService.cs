@@ -18,36 +18,33 @@ namespace Ces_Platform_Server_Side.Services
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
-            Test test = Test.Create(request,username!);
+            Test test = Test.Create(request, username!);
 
             test.Status = TestStatus.Approved;
 
-            if (await repository.AddTestAsync(test, ct))
-            {
-                Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
-                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {username} at {test.CreatedAtUtc} status: {test.Status}", userRole);
+            if (!await repository.AddTestAsync(test, ct))
+                throw new InvalidOperationException("Error occured while adding the test");
 
-                return TestResponse.FromModel(Fulltest!);
-            }
-            throw new InvalidOperationException("Error occured while adding the test");
+            Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct)!;
+            logger.LogInformation($"تم انشاء نموذج اختبار لمادة: {Fulltest!.Course.Name} تاريخ النموذج: {test.Date} بواسطة: {username} في تاريخ: {Fulltest!.CreatedAtUtc} الحاله: {Fulltest.Status}", userRole);
+
+            return TestResponse.FromModel(Fulltest!);
         }
 
         public async Task<TestResponse> CreatePendingTest(CreateTestRequest request, CancellationToken ct = default)
         {
-            var userName = "Anonymous";
+            var username = "طالب";
             var userRole = UserRole.Manager;
 
-            Test test = Test.Create(request, userName!);
+            Test test = Test.Create(request, username!);
 
-            if (await repository.AddTestAsync(test, ct))
-            {
-                Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct);
-                logger.LogInformation($"Create new Approced Test test Id {test.Id} by {userName} at {test.CreatedAtUtc} status: {test.Status}", userRole);
+            if (!await repository.AddTestAsync(test, ct))
+                throw new InvalidOperationException("Error occured while adding the test");
 
-                return TestResponse.FromModel(Fulltest!);
-            }
+            Test? Fulltest = await repository.GetTestByIdAsync(test.Id, ct)!;
+            logger.LogInformation($"تم انشاء نموذج اختبار لمادة: {Fulltest!.Course.Name} تاريخ النموذج: {test.Date} بواسطة: {username} في تاريخ: {Fulltest!.CreatedAtUtc} الحاله: {Fulltest.Status}", userRole);
 
-            throw new InvalidOperationException("Error occured while adding the test");
+            return TestResponse.FromModel(Fulltest!);
         }
 
         public async Task DeleteTest(Guid TestId, CancellationToken ct = default)
@@ -58,15 +55,14 @@ namespace Ces_Platform_Server_Side.Services
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
 
             var test = await repository.GetTestByIdAsync(TestId, ct);
-            if (test is null) {
-
+            if (test is null) 
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
-            }
+
             if (!await repository.DeleteTestAsync(test, ct)) 
-            {
                 throw new InvalidOperationException("Error occurd while deleting the Test");
-            }
-            logger.LogInformation($"deleted test {TestId} by {username} at {DateTime.UtcNow} status: {test.Status}", userRole);
+
+            logger.LogInformation($"تم حذف نموذج اختبار لمادة: {test!.Course.Name} تاريخ النموذج: {test.Date} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow} الحاله: {test.Status}", userRole);
+
         }
 
         public async Task<PagedResult<TestPageResponse>> GetPagedTests(TestFilter filter, CancellationToken ct = default)
@@ -111,21 +107,18 @@ namespace Ces_Platform_Server_Side.Services
             Test? test = await repository.GetTestByIdAsync(TestId,ct);
 
             if (test is null)
-            {
-
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
-            }
+
             if (test.IsEqual(request))
                 return;
 
             test.Assign(request,username!);
             
             if(!await repository.UpdateTestAsync(ct))
-            {
-
                 throw new InvalidOperationException("Error occured while updating the test");
-            }
-            logger.LogInformation($"updated test {test.Id} activation by {username} at {test.LastModifiedAtUtc} status: {test.Status}", userRole);
+
+            logger.LogInformation($"تم تعديل نموذج اختبار لمادة: {test!.Course.Name} تاريخ النموذج: {test.Date} بواسطة: {username} في تاريخ: {test!.LastModifiedAtUtc} الحاله: {test.Status}", userRole);
+
 
         }
 
@@ -139,20 +132,17 @@ namespace Ces_Platform_Server_Side.Services
             var test = await repository.GetTestByIdAsync(testId, ct) ?? throw new BusinessRuleException("Test not found", StatusCodes.Status404NotFound);
 
             if(test is null)
-            {
                 throw new BusinessRuleException("test not found", StatusCodes.Status404NotFound);
-            }
+
             if (test.Status == request.Status)
                 return;
 
             test.Status = request.Status;
 
             if (!await repository.UpdateTestAsync(ct))
-            {
-
                 throw new InvalidOperationException("Error occured while updating the test activation");
-            }
-            logger.LogInformation($"updated test status {test.Id} activation by {username} at {test.LastModifiedAtUtc} status: {test.Status}", userRole);
+
+            logger.LogInformation($"تم تعديل حالة نموذج الاختبار لمادة: {test!.Course.Name} تاريخ النموذج: {test.Date} بواسطة: {username} في تاريخ: {test!.LastModifiedAtUtc} الحاله: {test.Status}", userRole);
 
         }
 

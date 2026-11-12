@@ -24,7 +24,7 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
             throw new InvalidOperationException("Error occured while adding the teacher");
         }
 
-        logger.LogInformation($"Create new teacher {teacher.Id} by {username} at {teacher.CreatedAtUtc}",userRole);
+        logger.LogInformation($"تم انشاء معلم جديد باسم: {teacher.Name} بواسطة: {username} في تاريخ: {teacher.CreatedAtUtc}",userRole);
 
         return TeacherResponse.FromModel(teacher);
     } 
@@ -54,7 +54,8 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
             throw new InvalidOperationException("Error occured while updating the teacher");
         }
 
-        logger.LogInformation($"updated teacher {teacher.Id} by {username} at {teacher.LastModifiedAtUtc}",userRole);
+        
+        logger.LogInformation($"تم تعديل المعلم باسم: {teacher.Name} بواسطة: {username} في تاريخ: {teacher.LastModifiedAtUtc}",userRole);
 
     } 
 
@@ -116,7 +117,8 @@ public class TeacherService(ITeacherRepository repository,ILoggerWrapper<Teacher
             throw new InvalidOperationException("Error occurd while deleting the teacher");
         }
 
-        logger.LogInformation($"deleted teacher {teacher.Id} by {username} at {DateTime.Now}",userRole);
+        
+        logger.LogInformation($"تم حذف المعلم باسم: {teacher.Name} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow}",userRole);
     }
 
 }

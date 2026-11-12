@@ -13,30 +13,21 @@ namespace Ces_Platform_Server_Side.Services
     {
         public async Task<NoteResponse> CreateNote(CreateNoteRequest request, CancellationToken ct = default)
         {
-            var principal = accessor.HttpContext!.User;
-
-            var username = principal!.FindFirstValue(ClaimTypes.GivenName);
-            var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
+            var username = "طالب";
+            var userRole = UserRole.Manager;
 
 
-            if (request.CourseId == default(Guid))
-                throw new ArgumentNullException("CourseId Is Required");
+            Note CreatedNote = Note.Create(request, username!);
 
-               if (request.TeacherId== default(Guid))
-                throw new ArgumentNullException("TeacherId Is Required");
+            if (!await repository.AddNoteAsync(CreatedNote, ct))
+                throw new InvalidOperationException("Error occured while adding the note");
 
-            Note CreatedNote = Note.Create(request,username!);
+            NoteResponse AddedNote = await GetNoteById(CreatedNote.Id, ct);
 
-            if (await repository.AddNoteAsync(CreatedNote, ct))
-            {
-                NoteResponse AddedNote = await GetNoteById(CreatedNote.Id, ct);
-                
-                logger.LogInformation($"Create new Note {CreatedNote.Id} by {username} at {CreatedNote.CreatedAtUtc}", userRole);
+            logger.LogInformation($"تم انشاء ملزمه لمادة: {CreatedNote!.Course.Name} تاريخ الملزمه: {CreatedNote.Date} بواسطة: {username} في تاريخ: {CreatedNote!.CreatedAtUtc}", userRole);
 
-                return AddedNote;
-            }
 
-            throw new InvalidOperationException("Error occured while adding the note");
+            return AddedNote;
         }
         public async Task DeleteNote(Guid NoteId, CancellationToken ct = default)
         {
@@ -53,15 +44,11 @@ namespace Ces_Platform_Server_Side.Services
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
             }
 
-            var sucsses = await repository.DeleteNoteAsync(note, ct);
-            if (sucsses)
-            {
-                logger.LogInformation($"Delete Note {NoteId} by {username} at {DateTime.Now}", userRole);
-            }
-            else
-            {
+            if (!await repository.DeleteNoteAsync(note, ct))
                 throw new InvalidOperationException("Error occured while Delete the note");
-            }
+            
+            logger.LogInformation($"تم حذف ملزمه لمادة: {note!.Course.Name} تاريخ الملزمه: {note.Date} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow}", userRole);
+
         }
         public async Task<NoteResponse> GetNoteById(Guid NoteId, CancellationToken ct)
         {
@@ -103,27 +90,21 @@ namespace Ces_Platform_Server_Side.Services
 
             var username = principal!.FindFirstValue(ClaimTypes.GivenName);
             var userRole = Enum.Parse<UserRole>(principal!.FindFirstValue(ClaimTypes.Role)!);
-
-            if (request.CourseId == default(Guid))
-                throw new ArgumentNullException("CourseId Is Required");
-
-            if(request.TeacherId == default(Guid))
-                throw new ArgumentNullException("TeacherId Is Required");
             
             var note = await repository.GetNoteByIdAsync(NoteId);
             if (note is null)
-            {
                 throw new BusinessRuleException("note not found", StatusCodes.Status404NotFound);
 
-            }
             if (note.IsEqual(request))
                 return;
+
             note.Assign(request,username!);
+
             if (!await repository.UpdateNoteAsync(ct))
-            {
-                logger.LogInformation($"updated note {note.Id} activation by {username} at {note.LastModifiedAtUtc}", userRole);
                 throw new InvalidOperationException("Error occured while updating the note");
-            }
+
+            logger.LogInformation($"تم تعديل ملزمه لمادة: {note!.Course.Name} تاريخ الملزمه: {note.Date} بواسطة: {username} في تاريخ: {note!.LastModifiedAtUtc}", userRole);
+
 
         }
     }

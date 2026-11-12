@@ -21,12 +21,9 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
         var article =  Article.Create(request,username!);
 
         if(!await repository.AddArticleAsync(article, ct))
-        {
-            
             throw new InvalidOperationException("Error occured while adding the article");
-        }
 
-        logger.LogInformation($"Create new article {article.Id} by {username} at {article.CreatedAtUtc}",userRole);
+        logger.LogInformation($"تم انشاء مقال جديد بعنوان: {article!.Title} بواسطة: {username} في تاريخ: {article!.CreatedAtUtc}", userRole);
 
         return ArticleResponse.FromModel(article);
     } 
@@ -41,10 +38,7 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
         var article = await repository.GetArticleByIdAsync(articleId);
 
         if(article is null)
-        {
-            
             throw new BusinessRuleException("Article not found",StatusCodes.Status404NotFound);
-        }
 
         if(article.IsEqual(request))
             return;
@@ -52,12 +46,9 @@ public class ArticleService(IArticleRepository repository,ILoggerWrapper<Teacher
         article.Assign(request,username!);
  
         if(!await repository.UpdateArticleAsync(ct))
-        {
-
             throw new InvalidOperationException("Error occured while updating the article");
-        }
 
-        logger.LogInformation($"updated article {article.Id} by {username} at {article.LastModifiedAtUtc}",userRole);
+        logger.LogInformation($"تم تعديل المقال بعنوان: {article!.Title} بواسطة: {username} في تاريخ: {article!.LastModifiedAtUtc}", userRole);
 
     } 
 

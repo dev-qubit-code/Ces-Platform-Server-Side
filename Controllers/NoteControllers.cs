@@ -49,9 +49,6 @@ namespace Ces_Platform_Server_Side.Controllers
         [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
         [EndpointName("CreateNote")]
         [EndpointSummary("Post a Note")]
-   
-
-        [Authorize(Policy = "Manager/Admin")]
         public async Task<ActionResult> CreateNote(CreateNoteRequest request, CancellationToken ct = default)
         {
             NoteResponse response = await service.CreateNote(request, ct);

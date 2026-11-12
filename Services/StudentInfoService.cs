@@ -10,14 +10,14 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
     public async Task<StudentInfoResponse> CreateStudentInfo(CreateStudentInfoRequest request, CancellationToken ct = default)
     {        
         // logging userRole is manager and userName is Anonymous as default if there is no authorization 
-        var userName = "Anonymous";
+        var username = "طالب";
         var userRole = UserRole.Manager;
         
-        var newStudentInfo =  StudentInfo.Create(request,userName);
+        var newStudentInfo =  StudentInfo.Create(request,username);
 
-        newStudentInfo.Sources = request.Sources.Select(s => Source.Create(s,userName)).ToList();
+        newStudentInfo.Sources = request.Sources.Select(s => Source.Create(s,username)).ToList();
 
-        var skills = request.Skills.Select(s => Skill.Create(s,userName));
+        var skills = request.Skills.Select(s => Skill.Create(s,username));
 
         // adding the new skills from the request to the skills table 
         
@@ -37,8 +37,8 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
             throw new InvalidOperationException("Error occured while adding the studentInfo");
         }
 
-        logger.LogInformation($"Create new newStudentInfo {newStudentInfo.Id} by {userName} at {newStudentInfo.CreatedAtUtc}",userRole);
-
+        logger.LogInformation($"تم انشاء ملف اعمال الطالب باسم: {newStudentInfo.Name} بواسطة: {username} في تاريخ: {newStudentInfo.CreatedAtUtc}",userRole);
+        
         var studentInfo = await repository.GetStudentInfoByIdAsync(newStudentInfo.Id);
 
         return StudentInfoResponse.FromModel(studentInfo!);
@@ -47,7 +47,7 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
     public async Task UpdateStudentInfo(Guid studentInfoId,UpdateStudentInfoRequest request, CancellationToken ct = default)
     {   
         // logging userRole is manager and userName is Anonymous as default if there is no authorization 
-        var userName = "Anonymous";
+        var username = "طالب";
         var userRole = UserRole.Manager;
 
         var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
@@ -63,14 +63,14 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
         if(studentInfo.IsEqual(request))
             return;
-        studentInfo.Assign(request,userName);
+        studentInfo.Assign(request,username);
 
         // update the sources list 
         studentInfo.Sources.Clear();
-        studentInfo.Sources = request.Sources.DistinctBy(s => new { s.Name,s.Url }).Select(s => Source.Create(s,"testName")).ToList();
+        studentInfo.Sources = request.Sources.DistinctBy(s => new { s.Name,s.Url }).Select(s => Source.Create(s,username)).ToList();
         
 
-        var requestSkills = request.Skills.Select(s => Skill.Create(s,"testName"));
+        var requestSkills = request.Skills.Select(s => Skill.Create(s,username));
 
         // seperate the new skills from the duplicate ones
             var oldSkills = await repository.GetOldSkills(request.Skills,ct);
@@ -87,7 +87,7 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
             throw new InvalidOperationException("Error occured while updating the studentInfo");
         }
 
-        logger.LogInformation($"updated studentInfo {studentInfo.Id} by {userName} at {studentInfo.LastModifiedAtUtc}",userRole);
+        logger.LogInformation($"تم تعديل ملف اعمال الطالب باسم: {studentInfo.Name} بواسطة: {username} في تاريخ: {studentInfo.CreatedAtUtc}",userRole);
     } 
 
     public async Task<PagedResult<StudentInfoPageResponse>> GetPagedStudentInfos(StudentInfoFilter filter, CancellationToken ct = default)
@@ -128,7 +128,7 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
 
     public async Task DeleteStudentInfo(Guid studentInfoId, CancellationToken ct = default)
     {
-        var userName = "Anonymous";
+        var username = "طالب";
         var userRole = UserRole.Manager;
 
         var studentInfo = await repository.GetStudentInfoByIdAsync(studentInfoId);
@@ -150,7 +150,7 @@ public class StudentInfoService(IStudentInfoRepository repository, ILoggerWrappe
             throw new InvalidOperationException("Error occurd while deleting the studentInfo");
         }
 
-        logger.LogInformation($"deleted studentInfo {studentInfo.Id} by {userName} at {DateTime.Now}",userRole);
+        logger.LogInformation($"تم حذف ملف اعمال الطالب باسم: {studentInfo.Name} بواسطة: {username} في تاريخ: {DateTimeOffset.UtcNow}",userRole);
     }
 
     // skills services
